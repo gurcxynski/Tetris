@@ -7,28 +7,46 @@ using Tetris;
 
 namespace Tetris.Core
 {
-    public enum TileColor { red, green, blue };
+    public enum TileColor { red, green, blue, yellow };
 
     public class Square
     {
         private TileColor color { get; set; }
-        private Vector2 position { get; set; }
-
+        private Vector2 position;
+        public Vector2 GetPos()
+        {
+            return position;
+        }
         public Square(TileColor color, Vector2 position)
         {
             this.color = color;
             this.position = position;
         }
 
-        public bool CheckMove()
+        public bool CheckMoveDown()
         {
-            return position.Y != 22;
+            return position.Y < Globals.maxY - 1 && !Globals.scene.isTaken(position + new Vector2(0, 1));
         }
-        public void Move()
+        public bool CheckMoveRight()
+        {
+            return position.X < Globals.maxX - 1 && !Globals.scene.isTaken(position + new Vector2(1, 0));
+        }
+        public bool CheckMoveLeft()
+        {
+            return position.X > 0 && !Globals.scene.isTaken(position + new Vector2(-1, 0));
+        }
+        public void MoveDown()
         {
             position += new Vector2(0, 1);
         }
-
+        public void MoveLeft()
+        {
+            position += new Vector2(-1, 0);
+        }
+        public void MoveRight()
+        {
+            position += new Vector2(1, 0);
+        }
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Begin();

@@ -9,6 +9,7 @@ namespace Tetris
     {
         public static Dictionary<TileColor, Texture2D> textures;
         public static GameScene scene;
+        public static int maxX = 15, maxY = 23;
     }
     public class Game1 : Game
     {
@@ -27,13 +28,13 @@ namespace Tetris
         {
             base.Initialize();
 
-            graphics.PreferredBackBufferWidth = 420; //14
-            graphics.PreferredBackBufferHeight = 690; //23
+            graphics.PreferredBackBufferWidth = 30 * Globals.maxX; //14
+            graphics.PreferredBackBufferHeight = 30 * Globals.maxY; //23
             IsMouseVisible = true;
 
             graphics.ApplyChanges();
 
-            Globals.scene.Piece = new Piece(Piece.Type.S, new Vector2(6, 0), TileColor.red);
+            Globals.scene.Piece = new Piece(Piece.Type.S, new Vector2(7, 0), TileColor.red);
 
         }
         protected override void LoadContent()
@@ -41,6 +42,9 @@ namespace Tetris
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             Globals.textures[TileColor.red] = Content.Load<Texture2D>("red");
+            Globals.textures[TileColor.blue] = Content.Load<Texture2D>("blue");
+            Globals.textures[TileColor.green] = Content.Load<Texture2D>("green");
+            Globals.textures[TileColor.yellow] = Content.Load<Texture2D>("yellow");
         }
         protected override void Update(GameTime gameTime)
         {
@@ -50,7 +54,7 @@ namespace Tetris
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
             Globals.scene.Draw(spriteBatch);
             base.Draw(gameTime);
         }

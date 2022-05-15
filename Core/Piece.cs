@@ -58,15 +58,39 @@ namespace Tetris.Core
                 Globals.scene.Add(item);
             }
         }
-        public bool Move()
+        public bool MoveDown()
         {
             foreach (var item in squares)
             {
-                if (!item.CheckMove()) return false;
+                if (!item.CheckMoveDown()) return false;
             }
             foreach (var item in squares)
             {
-                item.Move();
+                item.MoveDown();
+            }
+            return true;
+        }
+        public bool MoveLeft()
+        {
+            foreach (var item in squares)
+            {
+                if (!item.CheckMoveLeft()) return false;
+            }
+            foreach (var item in squares)
+            {
+                item.MoveLeft();
+            }
+            return true;
+        }
+        public bool MoveRight()
+        {
+            foreach (var item in squares)
+            {
+                if (!item.CheckMoveRight()) return false;
+            }
+            foreach (var item in squares)
+            {
+                item.MoveRight();
             }
             return true;
         }
