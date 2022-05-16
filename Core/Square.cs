@@ -49,9 +49,7 @@ namespace Tetris.Core
         }
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Begin();
             spriteBatch.Draw(Globals.textures[this.color], this.position * 30, Color.White);
-            spriteBatch.End();
         }
     }
 }

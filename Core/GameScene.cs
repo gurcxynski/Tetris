@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using MonoGame.EasyInput;
 using Microsoft.Xna.Framework.Input;
 
@@ -28,9 +27,42 @@ namespace Tetris.Core
             
             return true;
         }
+        bool isRowFull(int n)
+        {
+            List<float> present = new List<float>();
+            foreach (var item in squares)
+            {
+                if (item.GetPos().Y == n) present.Add(item.GetPos().X);
+            }
+            for (int i = 0; i < Globals.maxX; i++)
+            {
+                if(!present.Contains(i)) 
+                {
+                    System.Diagnostics.Debug.WriteLine(i);
+                    return false;
+                }
+            }
+            return true;
+        }
+        void clearRow(int n)
+        {
+            List<Square> marked = new List<Square>();
+            foreach (var item in squares)
+            {
+                if (item.GetPos().Y == n) marked.Add(item);
+            }
+            foreach (var item in marked)
+            {
+                squares.Remove(item);
+            }
+        }
         public void Update(GameTime updateTime)
         {
             keyboard.Update();
+            if (keyboard.ReleasedThisFrame(Keys.Space))
+            {
+                Globals.Pause = !Globals.Pause;
+            }
             if (keyboard.ReleasedThisFrame(Keys.Left))
             {
                 piece.MoveLeft();
@@ -39,12 +71,24 @@ namespace Tetris.Core
             {
                 piece.MoveRight();
             }
-            if (updateTime.TotalGameTime.TotalMilliseconds - sinceMove > 100)
+            if (updateTime.TotalGameTime.TotalMilliseconds - sinceMove > 100 && !Globals.Pause)
             {
                 sinceMove = updateTime.TotalGameTime.TotalMilliseconds;
                 if (!piece.MoveDown())
                 {
-                    Piece = new Piece((Piece.Type)rnd.Next(0, 7), new Vector2(7, 0));
+                    piece = new Piece(Globals.nextType, new Vector2(7, 0));
+                    Globals.nextType = (Piece.Type)rnd.Next(0, 7);
+                    for (int i = 0; i < Globals.maxY; i++)
+                    {
+                        if(isRowFull(i))
+                        {
+                            clearRow(i);
+                            foreach (var item in squares)
+                            {
+                                item.MoveDown();
+                            }
+                        }
+                    }
                 }
             }
         }

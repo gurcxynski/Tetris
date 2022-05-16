@@ -59,8 +59,8 @@ namespace Tetris.Core
                     break;
                 case Type.Z:
                     squares.Add(new Square(color, startPos + new Vector2(0, 1)));
-                    squares.Add(new Square(color, startPos + new Vector2(1, 0)));
-                    squares.Add(new Square(color, startPos + new Vector2(-1, 1)));
+                    squares.Add(new Square(color, startPos + new Vector2(-1, 0)));
+                    squares.Add(new Square(color, startPos + new Vector2(1, 1)));
                     break;
                 case Type.J:
                     squares.Add(new Square(color, startPos + new Vector2(0, 1)));

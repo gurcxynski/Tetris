@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Tetris.Core;
-using System.Random;
 namespace Tetris
 {
     public static class Globals
@@ -10,21 +9,21 @@ namespace Tetris
         public static Dictionary<TileColor, Texture2D> textures;
         public static GameScene scene;
         public static int maxX = 15, maxY = 23;
-        public static Queue<Piece> queue;
+        public static Piece.Type nextType;
+        public static bool Pause = false;
     }
     public class Game1 : Game
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         System.Random rnd;
-
+        SpriteFont font;
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             Globals.textures = new Dictionary<TileColor, Texture2D>();
             Globals.scene = new GameScene();
-            Globals.queue = new Queue<Piece>();
             rnd = new System.Random();
         }
         protected override void Initialize()
@@ -37,17 +36,17 @@ namespace Tetris
 
             graphics.ApplyChanges();
 
-            Piece.Type nextType = (Piece.Type)rnd.Next(0, 7);
-            Globals.queue.Enqueue(new Piece(nextType, new Vector2(7, 0)));
-            for (int i = 0; i < 2; i++){
-                while(nextType == Globals.queue.Peek().GetType()) nextType = (Piece.Type)rnd.Next(0, 7);
-            }
+            Globals.nextType = (Piece.Type)rnd.Next(0, 7);
+            Globals.scene.Piece = new Piece((Piece.Type)rnd.Next(0, 7), new Vector2(7, 0));
+            
             
 
         }
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            font = Content.Load<SpriteFont>("fonts/MarkerFelt-16");
 
             Globals.textures[TileColor.red] = Content.Load<Texture2D>("red");
             Globals.textures[TileColor.blue] = Content.Load<Texture2D>("blue");
@@ -67,7 +66,10 @@ namespace Tetris
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
+            spriteBatch.Begin();
             Globals.scene.Draw(spriteBatch);
+            spriteBatch.DrawString(font, Globals.nextType.ToString(), new Vector2(0, 0), Color.White);
+            spriteBatch.End();
             base.Draw(gameTime);
         }
     }
