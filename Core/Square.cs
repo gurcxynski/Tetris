@@ -7,7 +7,7 @@ using Tetris;
 
 namespace Tetris.Core
 {
-    public enum TileColor { red, green, blue, yellow };
+    public enum TileColor { red, green, blue, yellow, orange, pink, purple };
 
     public class Square
     {

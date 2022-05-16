@@ -10,11 +10,36 @@ namespace Tetris.Core
         public enum Type { O, I, S, Z, L, J, T }
         public List<Square> squares;
         Type type;
-        public Piece(Type typeArg, Vector2 startPos, TileColor color)
+        public Piece(Type typeArg, Vector2 startPos)
         {
             squares = new List<Square>();
-            squares.Add(new Square(color, startPos));
             type = typeArg;
+            TileColor color = TileColor.red;
+            switch(type)
+            {
+                case Type.O:
+                    color = TileColor.yellow;
+                    break;
+                case Type.I:
+                    color = TileColor.blue;
+                    break;
+                case Type.S:
+                    color = TileColor.red;
+                    break;
+                case Type.Z:
+                    color = TileColor.green;
+                    break;
+                case Type.L:
+                    color = TileColor.orange;
+                    break;
+                case Type.J:
+                    color = TileColor.pink;
+                    break;
+                case Type.T:
+                    color = TileColor.purple;
+                    break;
+            }
+            squares.Add(new Square(color, startPos));
             switch (type)
             {
                 case Type.O:

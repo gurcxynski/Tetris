@@ -44,7 +44,7 @@ namespace Tetris.Core
                 sinceMove = updateTime.TotalGameTime.TotalMilliseconds;
                 if (!piece.MoveDown())
                 {
-                    Piece = new Piece((Piece.Type)rnd.Next(0, 7), new Vector2(7, 0), (TileColor)rnd.Next(0, 4));
+                    Piece = new Piece((Piece.Type)rnd.Next(0, 7), new Vector2(7, 0));
                 }
             }
         }

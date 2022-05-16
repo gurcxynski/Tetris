@@ -34,7 +34,7 @@ namespace Tetris
 
             graphics.ApplyChanges();
 
-            Globals.scene.Piece = new Piece(Piece.Type.S, new Vector2(7, 0), TileColor.red);
+            Globals.scene.Piece = new Piece(Piece.Type.S, new Vector2(7, 0));
 
         }
         protected override void LoadContent()
@@ -45,6 +45,10 @@ namespace Tetris
             Globals.textures[TileColor.blue] = Content.Load<Texture2D>("blue");
             Globals.textures[TileColor.green] = Content.Load<Texture2D>("green");
             Globals.textures[TileColor.yellow] = Content.Load<Texture2D>("yellow");
+            Globals.textures[TileColor.pink] = Content.Load<Texture2D>("pink");
+            Globals.textures[TileColor.purple] = Content.Load<Texture2D>("purple");
+            Globals.textures[TileColor.orange] = Content.Load<Texture2D>("orange");
+
         }
         protected override void Update(GameTime gameTime)
         {
