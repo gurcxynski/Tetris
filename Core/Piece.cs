@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Tetris.Core
 {
-    internal class Piece
+    public class Piece
     {
         public enum Type { O, I, S, Z, L, J, T }
         public List<Square> squares;
@@ -82,6 +82,10 @@ namespace Tetris.Core
             {
                 Globals.scene.Add(item);
             }
+        }
+        public new Type GetType()
+        {
+            return type;
         }
         public bool MoveDown()
         {

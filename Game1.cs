@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Tetris.Core;
-
+using System.Random;
 namespace Tetris
 {
     public static class Globals
@@ -10,12 +10,13 @@ namespace Tetris
         public static Dictionary<TileColor, Texture2D> textures;
         public static GameScene scene;
         public static int maxX = 15, maxY = 23;
+        public static Queue<Piece> queue;
     }
     public class Game1 : Game
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        
+        System.Random rnd;
 
         public Game1()
         {
@@ -23,6 +24,8 @@ namespace Tetris
             Content.RootDirectory = "Content";
             Globals.textures = new Dictionary<TileColor, Texture2D>();
             Globals.scene = new GameScene();
+            Globals.queue = new Queue<Piece>();
+            rnd = new System.Random();
         }
         protected override void Initialize()
         {
@@ -34,7 +37,12 @@ namespace Tetris
 
             graphics.ApplyChanges();
 
-            Globals.scene.Piece = new Piece(Piece.Type.S, new Vector2(7, 0));
+            Piece.Type nextType = (Piece.Type)rnd.Next(0, 7);
+            Globals.queue.Enqueue(new Piece(nextType, new Vector2(7, 0)));
+            for (int i = 0; i < 2; i++){
+                while(nextType == Globals.queue.Peek().GetType()) nextType = (Piece.Type)rnd.Next(0, 7);
+            }
+            
 
         }
         protected override void LoadContent()
