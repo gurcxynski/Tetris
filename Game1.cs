@@ -8,7 +8,7 @@ namespace Tetris
     {
         public static Dictionary<TileColor, Texture2D> textures;
         public static GameScene scene;
-        public static int maxX = 15, maxY = 23;
+        public static int maxX = 13, maxY = 27;
         public static Piece.Type nextType;
         public static bool Pause = false;
     }
@@ -18,6 +18,7 @@ namespace Tetris
         SpriteBatch spriteBatch;
         System.Random rnd;
         SpriteFont font;
+        Texture2D back;
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -30,16 +31,16 @@ namespace Tetris
         {
             base.Initialize();
 
-            graphics.PreferredBackBufferWidth = 30 * Globals.maxX; //14
-            graphics.PreferredBackBufferHeight = 30 * Globals.maxY; //23
+            graphics.PreferredBackBufferWidth = 30 * Globals.maxX + 170;
+            graphics.PreferredBackBufferHeight = 30 * Globals.maxY;
             IsMouseVisible = true;
 
             graphics.ApplyChanges();
 
             Globals.nextType = (Piece.Type)rnd.Next(0, 7);
             Globals.scene.Piece = new Piece((Piece.Type)rnd.Next(0, 7), new Vector2(7, 0));
-            
-            
+            Globals.scene.hold = new Piece(Piece.Type.I, new Vector2(15, 17));
+
 
         }
         protected override void LoadContent()
@@ -47,6 +48,8 @@ namespace Tetris
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             font = Content.Load<SpriteFont>("fonts/MarkerFelt-16");
+
+            back = Content.Load<Texture2D>("Bck");
 
             Globals.textures[TileColor.red] = Content.Load<Texture2D>("red");
             Globals.textures[TileColor.blue] = Content.Load<Texture2D>("blue");
@@ -67,8 +70,12 @@ namespace Tetris
         {
             GraphicsDevice.Clear(Color.Black);
             spriteBatch.Begin();
+            spriteBatch.Draw(back, new Vector2(0, 0), Color.White);
+            spriteBatch.Draw(back, new Vector2(0, 0), Color.White);
             Globals.scene.Draw(spriteBatch);
             spriteBatch.DrawString(font, Globals.nextType.ToString(), new Vector2(0, 0), Color.White);
+            //spriteBatch.DrawString(font, Globals.scene.hold.ToString(), new Vector2(20, 0), Color.White);
+            //.DrawString(font, Globals.scene.Piece.GetMid().ToString(), new Vector2(0, 30), Color.White);
             spriteBatch.End();
             base.Draw(gameTime);
         }

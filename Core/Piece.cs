@@ -10,11 +10,13 @@ namespace Tetris.Core
         public enum Type { O, I, S, Z, L, J, T }
         public List<Square> squares;
         Type type;
+        Vector2 middle;
         public Piece(Type typeArg, Vector2 startPos)
         {
             squares = new List<Square>();
             type = typeArg;
             TileColor color = TileColor.red;
+            middle = startPos;
             switch(type)
             {
                 case Type.O:
@@ -80,12 +82,45 @@ namespace Tetris.Core
             }
             foreach (var item in squares)
             {
+                item.inPiece = true;
                 Globals.scene.Add(item);
+            }
+        }
+        public Vector2 GetMid()
+        {
+            return middle;
+        }
+        public Vector2 Hold()
+        {
+            Vector2 prevMid = middle;
+            middle = new Vector2(15, 17);
+            foreach (var item in squares)
+            {
+                Vector2 relative = item.GetPos() - prevMid;
+                item.Move(new Vector2(15, 17) + relative);
+            }
+            return prevMid;
+        }
+        public void UnHold(Vector2 pos)
+        {
+            middle = pos;
+            foreach (var item in squares)
+            {
+                Vector2 relative = item.GetPos() - new Vector2(15, 17);
+                item.Move(pos + relative);
             }
         }
         public new Type GetType()
         {
             return type;
+        }
+        public Vector2 GetPos()
+        {
+            return middle;
+        }
+        public void Remove()
+        {
+            squares.RemoveRange(0, squares.Count);
         }
         public bool MoveDown()
         {
@@ -97,6 +132,7 @@ namespace Tetris.Core
             {
                 item.MoveDown();
             }
+            middle += new Vector2(0, 1);
             return true;
         }
         public bool MoveLeft()
@@ -109,6 +145,7 @@ namespace Tetris.Core
             {
                 item.MoveLeft();
             }
+            middle += new Vector2(-1, 0);
             return true;
         }
         public bool MoveRight()
@@ -121,6 +158,7 @@ namespace Tetris.Core
             {
                 item.MoveRight();
             }
+            middle += new Vector2(1, 0);
             return true;
         }
     }

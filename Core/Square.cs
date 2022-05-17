@@ -1,9 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Tetris;
 
 namespace Tetris.Core
 {
@@ -13,6 +9,7 @@ namespace Tetris.Core
     {
         private TileColor color { get; set; }
         private Vector2 position;
+        public bool inPiece = false;
         public Vector2 GetPos()
         {
             return position;
@@ -25,15 +22,15 @@ namespace Tetris.Core
 
         public bool CheckMoveDown()
         {
-            return position.Y < Globals.maxY - 1 && !Globals.scene.isTaken(position + new Vector2(0, 1));
+            return position.Y < Globals.maxY - 1 && !Globals.scene.IsTaken(position + new Vector2(0, 1));
         }
         public bool CheckMoveRight()
         {
-            return position.X < Globals.maxX - 1 && !Globals.scene.isTaken(position + new Vector2(1, 0));
+            return position.X < Globals.maxX - 1 && !Globals.scene.IsTaken(position + new Vector2(1, 0));
         }
         public bool CheckMoveLeft()
         {
-            return position.X > 0 && !Globals.scene.isTaken(position + new Vector2(-1, 0));
+            return position.X > 0 && !Globals.scene.IsTaken(position + new Vector2(-1, 0));
         }
         public void MoveDown()
         {
@@ -47,9 +44,17 @@ namespace Tetris.Core
         {
             position += new Vector2(1, 0);
         }
+        public void MoveUp()
+        {
+            position += new Vector2(0, -1);
+        }
+        public void Move(Vector2 pos)
+        {
+            position = pos;
+        }
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Globals.textures[this.color], this.position * 30, Color.White);
+            spriteBatch.Draw(Globals.textures[this.color], (this.position * 30) + new Vector2(22, 0), Color.White);
         }
     }
 }

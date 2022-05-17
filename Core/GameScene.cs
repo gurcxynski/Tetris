@@ -11,9 +11,10 @@ namespace Tetris.Core
     {
         List<Square> squares;
         Piece piece;
+        public Piece hold;
         double sinceMove = 0;
-        EasyKeyboard keyboard;
-        Random rnd = new Random();
+        readonly EasyKeyboard keyboard;
+        readonly Random rnd = new Random();
         internal Piece Piece { get => piece; set => piece = value; }
 
         public GameScene()
@@ -27,7 +28,7 @@ namespace Tetris.Core
             
             return true;
         }
-        bool isRowFull(int n)
+        bool IsRowFull(int n)
         {
             List<float> present = new List<float>();
             foreach (var item in squares)
@@ -38,13 +39,12 @@ namespace Tetris.Core
             {
                 if(!present.Contains(i)) 
                 {
-                    System.Diagnostics.Debug.WriteLine(i);
                     return false;
                 }
             }
             return true;
         }
-        void clearRow(int n)
+        void ClearRow(int n)
         {
             List<Square> marked = new List<Square>();
             foreach (var item in squares)
@@ -71,28 +71,43 @@ namespace Tetris.Core
             {
                 piece.MoveRight();
             }
+            if (keyboard.ReleasedThisFrame(Keys.Up))
+            {
+                hold.UnHold(Piece.Hold());
+                Piece temp = piece;
+                piece = hold;
+                hold = temp;
+            }
             if (updateTime.TotalGameTime.TotalMilliseconds - sinceMove > 100 && !Globals.Pause)
             {
                 sinceMove = updateTime.TotalGameTime.TotalMilliseconds;
                 if (!piece.MoveDown())
                 {
+                    foreach (var item in piece.squares)
+                    {
+                        item.inPiece = false;
+                    }
                     piece = new Piece(Globals.nextType, new Vector2(7, 0));
                     Globals.nextType = (Piece.Type)rnd.Next(0, 7);
                     for (int i = 0; i < Globals.maxY; i++)
                     {
-                        if(isRowFull(i))
+                        if(IsRowFull(i))
                         {
-                            clearRow(i);
+                            ClearRow(i);
                             foreach (var item in squares)
                             {
                                 item.MoveDown();
+                            }
+                            foreach (var item in Globals.scene.hold.squares)
+                            {
+                                item.MoveUp();
                             }
                         }
                     }
                 }
             }
         }
-        public bool isTaken(Vector2 pos)
+        public bool IsTaken(Vector2 pos)
         {
             foreach (var item in squares)
             {
