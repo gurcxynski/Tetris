@@ -1,103 +1,127 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Tetris.Core
 {
     public class Piece
     {
         public enum Type { O, I, S, Z, L, J, T }
+
         public List<Square> squares;
-        Type type;
-        Vector2 middle;
-        public Piece(Type typeArg, Vector2 startPos)
+        readonly Type type;
+        Vector2 position;
+        readonly Random rnd;
+        public Piece(Vector2 startPos)
         {
             squares = new List<Square>();
-            type = typeArg;
-            TileColor color = TileColor.red;
-            middle = startPos;
-            switch(type)
-            {
-                case Type.O:
-                    color = TileColor.yellow;
-                    break;
-                case Type.I:
-                    color = TileColor.blue;
-                    break;
-                case Type.S:
-                    color = TileColor.red;
-                    break;
-                case Type.Z:
-                    color = TileColor.green;
-                    break;
-                case Type.L:
-                    color = TileColor.orange;
-                    break;
-                case Type.J:
-                    color = TileColor.pink;
-                    break;
-                case Type.T:
-                    color = TileColor.purple;
-                    break;
-            }
-            squares.Add(new Square(color, startPos));
+            rnd = new Random();
+
+            type = (Type)rnd.Next(0, 7);
+            position = startPos;
+
+            squares.Add(new Square(type, startPos));
             switch (type)
             {
                 case Type.O:
-                    squares.Add(new Square(color, startPos + new Vector2(1, 0)));
-                    squares.Add(new Square(color, startPos + new Vector2(1, 1)));
-                    squares.Add(new Square(color, startPos + new Vector2(0, 1)));
+                    squares.Add(new Square(type, startPos + new Vector2(1, 0)));
+                    squares.Add(new Square(type, startPos + new Vector2(1, 1)));
+                    squares.Add(new Square(type, startPos + new Vector2(0, 1)));
                     break;
                 case Type.I:
-                    squares.Add(new Square(color, startPos + new Vector2(0, 1)));
-                    squares.Add(new Square(color, startPos + new Vector2(0, 2)));
-                    squares.Add(new Square(color, startPos + new Vector2(0, 3)));
+                    squares.Add(new Square(type, startPos + new Vector2(0, 1)));
+                    squares.Add(new Square(type, startPos + new Vector2(0, 2)));
+                    squares.Add(new Square(type, startPos + new Vector2(0, 3)));
                     break;
                 case Type.S:
-                    squares.Add(new Square(color, startPos + new Vector2(0, 1)));
-                    squares.Add(new Square(color, startPos + new Vector2(1, 0)));
-                    squares.Add(new Square(color, startPos + new Vector2(-1, 1)));
+                    squares.Add(new Square(type, startPos + new Vector2(0, 1)));
+                    squares.Add(new Square(type, startPos + new Vector2(1, 0)));
+                    squares.Add(new Square(type, startPos + new Vector2(-1, 1)));
                     break;
                 case Type.Z:
-                    squares.Add(new Square(color, startPos + new Vector2(0, 1)));
-                    squares.Add(new Square(color, startPos + new Vector2(-1, 0)));
-                    squares.Add(new Square(color, startPos + new Vector2(1, 1)));
+                    squares.Add(new Square(type, startPos + new Vector2(0, 1)));
+                    squares.Add(new Square(type, startPos + new Vector2(-1, 0)));
+                    squares.Add(new Square(type, startPos + new Vector2(1, 1)));
                     break;
                 case Type.J:
-                    squares.Add(new Square(color, startPos + new Vector2(0, 1)));
-                    squares.Add(new Square(color, startPos + new Vector2(0, 2)));
-                    squares.Add(new Square(color, startPos + new Vector2(-1, 2)));
+                    squares.Add(new Square(type, startPos + new Vector2(0, 1)));
+                    squares.Add(new Square(type, startPos + new Vector2(0, 2)));
+                    squares.Add(new Square(type, startPos + new Vector2(-1, 2)));
                     break;
                 case Type.L:
-                    squares.Add(new Square(color, startPos + new Vector2(0, 1)));
-                    squares.Add(new Square(color, startPos + new Vector2(0, 2)));
-                    squares.Add(new Square(color, startPos + new Vector2(1, 2)));
+                    squares.Add(new Square(type, startPos + new Vector2(0, 1)));
+                    squares.Add(new Square(type, startPos + new Vector2(0, 2)));
+                    squares.Add(new Square(type, startPos + new Vector2(1, 2)));
                     break;
                 case Type.T:
-                    squares.Add(new Square(color, startPos + new Vector2(0, 1)));
-                    squares.Add(new Square(color, startPos + new Vector2(1, 0)));
-                    squares.Add(new Square(color, startPos + new Vector2(-1, 0)));
+                    squares.Add(new Square(type, startPos + new Vector2(0, 1)));
+                    squares.Add(new Square(type, startPos + new Vector2(1, 0)));
+                    squares.Add(new Square(type, startPos + new Vector2(-1, 0)));
                     break;
             }
-            foreach (var item in squares)
-            {
-                item.inPiece = true;
-                Globals.scene.Add(item);
-            }
+
+            squares.ForEach(Globals.scene.Add);
         }
-        public Vector2 GetMid()
+        public Piece()
         {
-            return middle;
+            squares = new List<Square>();
+            rnd = new Random();
+
+            type = (Type)rnd.Next(0, 7);
+            position = Globals.queueLastPos;
+
+            squares.Add(new Square(type, position));
+            switch (type)
+            {
+                case Type.O:
+                    squares.Add(new Square(type, position + new Vector2(1, 0)));
+                    squares.Add(new Square(type, position + new Vector2(1, 1)));
+                    squares.Add(new Square(type, position + new Vector2(0, 1)));
+                    break;
+                case Type.I:
+                    squares.Add(new Square(type, position + new Vector2(0, 1)));
+                    squares.Add(new Square(type, position + new Vector2(0, 2)));
+                    squares.Add(new Square(type, position + new Vector2(0, 3)));
+                    break;
+                case Type.S:
+                    squares.Add(new Square(type, position + new Vector2(0, 1)));
+                    squares.Add(new Square(type, position + new Vector2(1, 0)));
+                    squares.Add(new Square(type, position + new Vector2(-1, 1)));
+                    break;
+                case Type.Z:
+                    squares.Add(new Square(type, position + new Vector2(0, 1)));
+                    squares.Add(new Square(type, position + new Vector2(-1, 0)));
+                    squares.Add(new Square(type, position + new Vector2(1, 1)));
+                    break;
+                case Type.J:
+                    squares.Add(new Square(type, position + new Vector2(0, 1)));
+                    squares.Add(new Square(type, position + new Vector2(0, 2)));
+                    squares.Add(new Square(type, position + new Vector2(-1, 2)));
+                    break;
+                case Type.L:
+                    squares.Add(new Square(type, position + new Vector2(0, 1)));
+                    squares.Add(new Square(type, position + new Vector2(0, 2)));
+                    squares.Add(new Square(type, position + new Vector2(1, 2)));
+                    break;
+                case Type.T:
+                    squares.Add(new Square(type, position + new Vector2(0, 1)));
+                    squares.Add(new Square(type, position + new Vector2(1, 0)));
+                    squares.Add(new Square(type, position + new Vector2(-1, 0)));
+                    break;
+            }
+
+            squares.ForEach(Globals.scene.Add);
         }
+
         public Vector2 Hold()
         {
-            Vector2 prevMid = middle;
-            middle = new Vector2(15, 16);
+            Vector2 prevMid = position;
+            position = Globals.holdPos;
             foreach (var item in squares)
             {
                 Vector2 relative = item.GetPos() - prevMid;
-                item.Move(middle + relative);
+                item.MoveTo(position + relative);
             }
             return prevMid;
         }
@@ -105,74 +129,66 @@ namespace Tetris.Core
         {
             foreach (var item in squares)
             {
-                Vector2 relative = item.GetPos() - middle;
-                item.Move(pos + relative);
+                Vector2 relative = item.GetPos() - position;
+                item.MoveTo(pos + relative);
             }
-            middle = pos;
+            position = pos;
+        }
+        
+        public bool Move(Keys direction)
+        {
+            foreach (var item in squares)
+            {
+                if (!item.CheckMove(direction)) return false;
+            }
+            foreach (var item in squares)
+            {
+                item.Move(direction);
+            }
+            position += direction switch
+            {
+                Keys.Left => new Vector2(-1, 0),
+                Keys.Right => new Vector2(1, 0),
+                Keys.Down => new Vector2(0, 1),
+                _ => new Vector2(0, 0)
+            };
+            return true;
+        }
+        public bool Move(Keys direction, float amount)
+        {
+            foreach (var item in squares)
+            {
+                item.Move(direction, amount);
+            }
+            position += direction switch
+            {
+                Keys.Left => new Vector2(-amount, 0),
+                Keys.Right => new Vector2(amount, 0),
+                Keys.Down => new Vector2(0, amount),
+                _ => new Vector2(0, 0)
+            };
+            return true;
+        }
+        public bool Fall()
+        {
+            foreach (var item in squares)
+            {
+                if (!item.CheckMove(Keys.Down)) return false;
+            }
+            foreach (var item in squares)
+            {
+                item.Move(Keys.Down);
+            }
+            position += new Vector2(0, 1);
+            return true;
         }
         public new Type GetType()
         {
             return type;
         }
-        public Vector2 GetPos()
+        public Vector2 GetPosition()
         {
-            return middle;
-        }
-        public void Remove()
-        {
-            squares.RemoveRange(0, squares.Count);
-        }
-        public bool MoveDown()
-        {
-            foreach (var item in squares)
-            {
-                if (!item.CheckMoveDown()) return false;
-            }
-            foreach (var item in squares)
-            {
-                item.MoveDown();
-            }
-            middle += new Vector2(0, 1);
-            return true;
-        }
-        public bool MoveDown(int n)
-        {
-            foreach (var item in squares)
-            {
-                for (int i = 0; i < n; i++)
-                {
-                    item.MoveDown();
-                }
-
-            }
-            middle += new Vector2(0, n);
-            return true;
-        }
-        public bool MoveLeft()
-        {
-            foreach (var item in squares)
-            {
-                if (!item.CheckMoveLeft()) return false;
-            }
-            foreach (var item in squares)
-            {
-                item.MoveLeft();
-            }
-            middle += new Vector2(-1, 0);
-            return true;
-        }
-        public bool MoveRight()
-        {
-            foreach (var item in squares)
-            {
-                if (!item.CheckMoveRight()) return false;
-            }
-            foreach (var item in squares)
-            {
-                item.MoveRight();
-            }
-            middle += new Vector2(1, 0);
-            return true;
+            return position;
         }
     }
 }

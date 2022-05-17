@@ -1,60 +1,54 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace Tetris.Core
 {
-    public enum TileColor { red, green, blue, yellow, orange, pink, purple };
 
     public class Square
     {
-        private TileColor color { get; set; }
-        private Vector2 position;
-        public bool inPiece = false;
+        private readonly Piece.Type _type;
+        private Vector2 _position;
+        
+        public Square(Piece.Type type, Vector2 position)
+        {
+            _position = position;
+            _type = type;
+        }
+        public bool CheckMove(Keys direction)
+        {
+            return direction switch
+            {
+                Keys.Left => _position.X > 0 && !Globals.scene.IsTaken(_position + new Vector2(-1, 0)),
+                Keys.Right => _position.X < Globals.maxX - 1 && !Globals.scene.IsTaken(_position + new Vector2(1, 0)),
+                Keys.Down => _position.Y < Globals.maxY - 1 && !Globals.scene.IsTaken(_position + new Vector2(0, 1)),
+                _ => false,
+            };
+        }
+        
+        public void MoveTo(Vector2 pos)
+        {
+            _position = pos;
+        }
+        public void Move(Keys direction)
+        {
+            if (direction == Keys.Left) _position += new Vector2(-1, 0);
+            if (direction == Keys.Right) _position += new Vector2(1, 0);
+            if (direction == Keys.Down) _position += new Vector2(0, 1);
+        }
+        public void Move(Keys direction, float amount)
+        {
+            if (direction == Keys.Left) _position += new Vector2(-amount, 0);
+            if (direction == Keys.Right) _position += new Vector2(amount, 0);
+            if (direction == Keys.Down) _position += new Vector2(0, amount);
+        }
         public Vector2 GetPos()
         {
-            return position;
-        }
-        public Square(TileColor color, Vector2 position)
-        {
-            this.color = color;
-            this.position = position;
-        }
-
-        public bool CheckMoveDown()
-        {
-            return position.Y < Globals.maxY - 1 && !Globals.scene.IsTaken(position + new Vector2(0, 1));
-        }
-        public bool CheckMoveRight()
-        {
-            return position.X < Globals.maxX - 1 && !Globals.scene.IsTaken(position + new Vector2(1, 0));
-        }
-        public bool CheckMoveLeft()
-        {
-            return position.X > 0 && !Globals.scene.IsTaken(position + new Vector2(-1, 0));
-        }
-        public void MoveDown()
-        {
-            position += new Vector2(0, 1);
-        }
-        public void MoveLeft()
-        {
-            position += new Vector2(-1, 0);
-        }
-        public void MoveRight()
-        {
-            position += new Vector2(1, 0);
-        }
-        public void MoveUp()
-        {
-            position += new Vector2(0, -1);
-        }
-        public void Move(Vector2 pos)
-        {
-            position = pos;
+            return _position;
         }
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Globals.textures[this.color], (this.position * 30) + new Vector2(22, 0), Color.White);
+            spriteBatch.Draw(Globals.textures[_type], (_position * 30) + new Vector2(22, 0), Color.White);
         }
     }
 }
