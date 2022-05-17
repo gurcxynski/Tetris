@@ -93,22 +93,22 @@ namespace Tetris.Core
         public Vector2 Hold()
         {
             Vector2 prevMid = middle;
-            middle = new Vector2(15, 17);
+            middle = new Vector2(15, 16);
             foreach (var item in squares)
             {
                 Vector2 relative = item.GetPos() - prevMid;
-                item.Move(new Vector2(15, 17) + relative);
+                item.Move(middle + relative);
             }
             return prevMid;
         }
-        public void UnHold(Vector2 pos)
+        public void MoveTo(Vector2 pos)
         {
-            middle = pos;
             foreach (var item in squares)
             {
-                Vector2 relative = item.GetPos() - new Vector2(15, 17);
+                Vector2 relative = item.GetPos() - middle;
                 item.Move(pos + relative);
             }
+            middle = pos;
         }
         public new Type GetType()
         {
@@ -133,6 +133,19 @@ namespace Tetris.Core
                 item.MoveDown();
             }
             middle += new Vector2(0, 1);
+            return true;
+        }
+        public bool MoveDown(int n)
+        {
+            foreach (var item in squares)
+            {
+                for (int i = 0; i < n; i++)
+                {
+                    item.MoveDown();
+                }
+
+            }
+            middle += new Vector2(0, n);
             return true;
         }
         public bool MoveLeft()

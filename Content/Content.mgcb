@@ -89,6 +89,12 @@
 /processorParam:TextureFormat=Color
 /build:orange.png
 
+#begin Original Tetris theme (Tetris Soundtrack).mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Original Tetris theme (Tetris Soundtrack).mp3;tetris.mp3
+
 #begin pink.png
 /importer:TextureImporter
 /processor:TextureProcessor
