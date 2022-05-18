@@ -48,7 +48,7 @@ namespace Tetris.Core
         }
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Globals.textures[_type], (_position * 30) + new Vector2(22, 0), Color.White);
+            spriteBatch.Draw(Globals.blockTextures[_type], (_position * 30) + new Vector2(22, 0), Color.White);
         }
     }
 }

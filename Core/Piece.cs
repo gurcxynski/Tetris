@@ -141,10 +141,9 @@ namespace Tetris.Core
             {
                 if (!item.CheckMove(direction)) return false;
             }
-            foreach (var item in squares)
-            {
-                item.Move(direction);
-            }
+
+            squares.ForEach(delegate (Square square) { square.Move(direction); });
+
             position += direction switch
             {
                 Keys.Left => new Vector2(-1, 0),
@@ -156,10 +155,7 @@ namespace Tetris.Core
         }
         public bool Move(Keys direction, float amount)
         {
-            foreach (var item in squares)
-            {
-                item.Move(direction, amount);
-            }
+            squares.ForEach(delegate (Square square) { square.Move(direction, amount); });
             position += direction switch
             {
                 Keys.Left => new Vector2(-amount, 0),
@@ -175,10 +171,9 @@ namespace Tetris.Core
             {
                 if (!item.CheckMove(Keys.Down)) return false;
             }
-            foreach (var item in squares)
-            {
-                item.Move(Keys.Down);
-            }
+
+            squares.ForEach(delegate (Square square) { square.Move(Keys.Down);});
+
             position += new Vector2(0, 1);
             return true;
         }
