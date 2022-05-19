@@ -35,7 +35,7 @@ namespace Tetris.Core
         {
             hovered = EnteredButton();
 
-            if (hovered) texture = Globals.buttonTextures.Value;
+            if (hovered && !Globals.gameRunning) texture = Globals.buttonTextures.Value;
             else texture = Globals.buttonTextures.Key;
         }
 

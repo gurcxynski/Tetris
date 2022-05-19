@@ -16,9 +16,9 @@ namespace Tetris.Buttons
         }
         protected override void OnClick(MouseButtons button)
         {
-            if (hovered)
+            if (hovered && !Globals.gameRunning)
             {
-                Globals.gameRunning = !Globals.gameRunning;
+                Globals.gameRunning = true;
             }
         }
     }

@@ -30,7 +30,7 @@ namespace Tetris.Core
         {
             queue.Enqueue(new Piece(Globals.queueLastPos + new Vector2(0, 8)));
             queue.Enqueue(new Piece(Globals.queueLastPos + new Vector2(0, 4)));
-            queue.Enqueue(new Piece());
+            queue.Enqueue(new Piece(Globals.queueLastPos));
 
             fallingPiece = new Piece(Globals.startPos);
 
@@ -70,21 +70,43 @@ namespace Tetris.Core
         void Hold()
         {
             if (changedCurrentPiece) return;
+
             if (heldPiece is null)
             {
                 heldPiece = Dequeue();
             }
+
             heldPiece.MoveTo(Globals.startPos);
             fallingPiece.MoveTo(Globals.holdPos);
+
             (fallingPiece, heldPiece) = (heldPiece, fallingPiece);
+
             changedCurrentPiece = true;
         }
         void HandleInput(Keys button)
         {
+            if (!Globals.gameRunning) return;
             if (button == Keys.Space) pause = !pause;
             if (pause) return;
-            if (button == Keys.Left || button == Keys.Right) fallingPiece.Move(button);
-            if (button == Keys.Up) Hold();
+            switch (button)
+            {
+                case Keys.Left:
+                    fallingPiece.Move(Piece.Direction.Left);
+                    break;
+                case Keys.Right:
+                    fallingPiece.Move(Piece.Direction.Right);
+                    break;
+                case Keys.Up:
+                    Hold();
+                    break;
+                case Keys.Down:
+                    while (fallingPiece.Fall()) { };
+                    TakeNewPiece();
+                    break;
+                case Keys.Enter:
+                    fallingPiece.Turn();
+                    break;
+            }
         }
         Piece Dequeue()
         {
@@ -92,10 +114,50 @@ namespace Tetris.Core
             dequeued.MoveTo(Globals.startPos);
             foreach (var item in queue)
             {
-                item.Move(Keys.Down, 4);
+                item.Move(Piece.Direction.Down, 4);
             }
-            queue.Enqueue(new Piece());
+            queue.Enqueue(new Piece(Globals.queueLastPos));
             return dequeued;
+        }
+        bool TakeNewPiece()
+        {
+            foreach (var item in squares)
+            {
+                if (item.GetPos().Y < 3) return false;
+            }
+
+            fallingPiece = Dequeue();
+            changedCurrentPiece = false;
+
+            for (int i = 0; i < Globals.maxY; i++)
+            {
+                if (IsRowFull(i))
+                {
+                    ClearRow(i);
+
+                    squares.ForEach(delegate (Square item)
+                    {
+                        if (item.GetPos().Y < i) item.Move(Piece.Direction.Down);
+                    });
+
+                    if (heldPiece != null)
+                    {
+                        Globals.scene.heldPiece.squares.ForEach(delegate (Square item)
+                        {
+                            item.Move(Piece.Direction.Up);
+                        });
+                    }
+
+                    foreach (var item in queue)
+                    {
+                        item.squares.ForEach(delegate (Square item2)
+                        {
+                            item2.Move(Piece.Direction.Up);
+                        });
+                    }
+                }
+            }
+            return true;
         }
         public bool Update(GameTime updateTime)
         {
@@ -107,48 +169,14 @@ namespace Tetris.Core
 
                 if (!fallingPiece.Fall())
                 {
-                    foreach (var item in squares)
-                    {
-                        if (item.GetPos().Y < 4) return false;
-                    }
-
-                    fallingPiece = Dequeue();
-                    changedCurrentPiece = false;
-
-                    for (int i = 0; i < Globals.maxY; i++)
-                    {
-                        if(IsRowFull(i))
-                        {
-                            ClearRow(i);
-
-                            squares.ForEach(delegate (Square item)
-                            {
-                                if (item.GetPos().Y < i) item.Move(Keys.Down);
-                            });
-
-                            if (heldPiece != null)
-                            {
-                                Globals.scene.heldPiece.squares.ForEach(delegate (Square item)
-                                {
-                                    item.Move(Keys.Up);
-                                });
-                            }
-                                
-                            foreach (var item in queue)
-                            {
-                                item.squares.ForEach(delegate (Square item2)
-                                {
-                                    item2.Move(Keys.Up);
-                                });
-                            }
-                        }
-                    }
+                    if (!TakeNewPiece()) return false;
                 }
             }
             return true;
         }
         public bool IsTaken(Vector2 pos)
         {
+            if (pos.X < 0 || pos.X >= Globals.maxX || pos.Y >= Globals.maxY) return true;
             foreach (var item in squares)
             {
                 if (item.GetPos() == pos && !fallingPiece.squares.Contains(item)) return true;

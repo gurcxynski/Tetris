@@ -18,7 +18,7 @@ namespace Tetris
         public static GameScene scene;
 
         public static int maxX = 13, maxY = 27;
-        public static Vector2 holdPos = new Vector2(15, 16);
+        public static Vector2 holdPos = new Vector2(15, 18);
         public static Vector2 queueLastPos = new Vector2(15, 4);
         public static Vector2 startPos = new Vector2(7, 1);
 

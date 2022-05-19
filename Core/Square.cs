@@ -15,32 +15,38 @@ namespace Tetris.Core
             _position = position;
             _type = type;
         }
-        public bool CheckMove(Keys direction)
+        public bool CheckMove(Piece.Direction direction)
         {
             return direction switch
             {
-                Keys.Left => _position.X > 0 && !Globals.scene.IsTaken(_position + new Vector2(-1, 0)),
-                Keys.Right => _position.X < Globals.maxX - 1 && !Globals.scene.IsTaken(_position + new Vector2(1, 0)),
-                Keys.Down => _position.Y < Globals.maxY - 1 && !Globals.scene.IsTaken(_position + new Vector2(0, 1)),
+                Piece.Direction.Left => _position.X > 0 && !Globals.scene.IsTaken(_position + new Vector2(-1, 0)),
+                Piece.Direction.Right => _position.X < Globals.maxX - 1 && !Globals.scene.IsTaken(_position + new Vector2(1, 0)),
+                Piece.Direction.Down => _position.Y < Globals.maxY - 1 && !Globals.scene.IsTaken(_position + new Vector2(0, 1)),
                 _ => false,
             };
         }
         
-        public void MoveTo(Vector2 pos)
+        public bool MoveTo(Vector2 pos)
+        {
+            if (Globals.scene.IsTaken(_position)) return false;
+            _position = pos;
+            return true;
+        }
+        public void ForceMoveTo(Vector2 pos)
         {
             _position = pos;
         }
-        public void Move(Keys direction)
+        public void Move(Piece.Direction direction)
         {
-            if (direction == Keys.Left) _position += new Vector2(-1, 0);
-            if (direction == Keys.Right) _position += new Vector2(1, 0);
-            if (direction == Keys.Down) _position += new Vector2(0, 1);
+            if (direction == Piece.Direction.Left) _position += new Vector2(-1, 0);
+            if (direction == Piece.Direction.Right) _position += new Vector2(1, 0);
+            if (direction == Piece.Direction.Down) _position += new Vector2(0, 1);
         }
-        public void Move(Keys direction, float amount)
+        public void Move(Piece.Direction direction, float amount)
         {
-            if (direction == Keys.Left) _position += new Vector2(-amount, 0);
-            if (direction == Keys.Right) _position += new Vector2(amount, 0);
-            if (direction == Keys.Down) _position += new Vector2(0, amount);
+            if (direction == Piece.Direction.Left) _position += new Vector2(-amount, 0);
+            if (direction == Piece.Direction.Right) _position += new Vector2(amount, 0);
+            if (direction == Piece.Direction.Down) _position += new Vector2(0, amount);
         }
         public Vector2 GetPos()
         {
