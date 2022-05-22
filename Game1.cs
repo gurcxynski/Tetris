@@ -71,7 +71,7 @@ namespace Tetris
             Globals.font = Content.Load<SpriteFont>("fonts/MarkerFelt-16");
 
             back = Content.Load<Texture2D>("Bck");
-            m_back = Content.Load<Texture2D>("menu");
+            m_back = Content.Load<Texture2D>("back");
 
             Globals.blockTextures = new Dictionary<Piece.Type, Texture2D>
             {
@@ -84,7 +84,7 @@ namespace Tetris
                 [Piece.Type.L] = Content.Load<Texture2D>("orange")
             };
 
-            Globals.buttonTextures = new KeyValuePair<Texture2D, Texture2D>(Content.Load<Texture2D>("buttons"), Content.Load<Texture2D>("buttons2"));
+            Globals.buttonTextures = new KeyValuePair<Texture2D, Texture2D>(Content.Load<Texture2D>("buttonnew1"), Content.Load<Texture2D>("buttonnew2"));
 
             Globals.song = Content.Load<Song>("tetris");
             MediaPlayer.Play(Globals.song);

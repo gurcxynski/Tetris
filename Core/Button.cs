@@ -13,7 +13,7 @@ namespace Tetris.Core
         protected Button()
         {
             Globals.mouse.OnMouseButtonPressed += OnClick; 
-            texture = Globals.buttonTextures.Value;
+            texture = Globals.buttonTextures.Key;
         }
         public void Draw(SpriteBatch spriteBatch)
         {

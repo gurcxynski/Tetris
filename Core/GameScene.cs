@@ -86,7 +86,7 @@ namespace Tetris.Core
         void HandleInput(Keys button)
         {
             if (!Globals.gameRunning) return;
-            if (button == Keys.Space) pause = !pause;
+            if (button == Keys.P) pause = !pause;
             if (pause) return;
             switch (button)
             {
@@ -103,7 +103,7 @@ namespace Tetris.Core
                     while (fallingPiece.Fall()) { };
                     TakeNewPiece();
                     break;
-                case Keys.Enter:
+                case Keys.Space:
                     fallingPiece.Turn();
                     break;
             }
@@ -163,7 +163,7 @@ namespace Tetris.Core
         {
             if (!initialized) Initialize();
 
-            if (updateTime.TotalGameTime.TotalMilliseconds - sinceMove > 100 && !pause)
+            if (updateTime.TotalGameTime.TotalMilliseconds - sinceMove > 150 && !pause)
             {
                 sinceMove = updateTime.TotalGameTime.TotalMilliseconds;
 
