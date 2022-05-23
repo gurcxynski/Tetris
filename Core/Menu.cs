@@ -22,5 +22,13 @@ namespace Tetris.Core
         {
             buttons.ForEach(delegate (Button btn) { btn.Update(); });
         }
+        public void Enable()
+        {
+            buttons.ForEach(delegate (Button btn) { btn.Enable(); });
+        }
+        public void Disable()
+        {
+            buttons.ForEach(delegate (Button btn) { btn.Disable(); });
+        }
     }
 }

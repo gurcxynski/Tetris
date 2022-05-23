@@ -1,34 +1,27 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Media;
-using MonoGame.EasyInput;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Tetris.Core;
 
 namespace Tetris.Buttons
 {
-    public class MusicButton : Button
+    public class EnableMusicButton : Button
     {
-        public MusicButton(Vector2 arg)
+        public EnableMusicButton(Vector2 arg)
         {
             position = arg;
             id = 2;
         }
-        protected override void OnClick(MouseButtons button)
+        protected override void Action()
         {
-            if (hovered && Globals.state == GameState.optionsMenu)
+            if (Settings.music)
             {
-                if (Settings.music)
-                {
-                    Settings.music = false;
-                    MediaPlayer.Stop();
-                }
-                else
-                {
-                    MediaPlayer.Play(Globals.song);
-                    Settings.music = true;
-                }
+                Settings.music = false;
+                MediaPlayer.Stop();
+            }
+            else
+            {
+                MediaPlayer.Play(Globals.song);
+                Settings.music = true;
             }
         }
     }

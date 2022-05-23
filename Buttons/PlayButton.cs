@@ -14,12 +14,10 @@ namespace Tetris.Buttons
             position = arg;
             id = 0;
         }
-        protected override void OnClick(MouseButtons button)
+        protected override void Action()
         {
-            if (hovered && Globals.state != GameState.gameRunning)
-            {
-                Globals.state = GameState.gameRunning;
-            }
+            Globals.state = GameState.gameRunning;
+            Disable();
         }
     }
 }

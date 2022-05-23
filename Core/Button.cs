@@ -10,6 +10,7 @@ namespace Tetris.Core
         protected Texture2D texture;
         protected bool hovered = false;
         protected int id;
+        protected bool enabled = false;
         protected Button()
         {
             Globals.mouse.OnMouseButtonPressed += OnClick; 
@@ -37,7 +38,22 @@ namespace Tetris.Core
 
             texture = Globals.buttonTextures[(id, hovered)];
         }
-
-        protected abstract void OnClick(MouseButtons button);
+        public void Enable()
+        {
+            enabled = true;
+        }
+        public void Disable()
+        {
+            enabled = false;
+        }
+        protected void OnClick(MouseButtons button)
+        {
+            if (hovered && enabled && button == MouseButtons.Left && !Globals.ClickedMenuButton)
+            {
+                Action();
+                Globals.ClickedMenuButton = true;
+            }
+        }
+        protected abstract void Action();
     }
 }

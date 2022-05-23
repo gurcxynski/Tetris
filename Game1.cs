@@ -6,7 +6,6 @@ using Tetris.Core;
 using MonoGame.EasyInput;
 using Microsoft.Xna.Framework.Input;
 using Tetris.Menus;
-using Tetris.Buttons;
 
 namespace Tetris
 {
@@ -32,6 +31,8 @@ namespace Tetris
         public static StartMenu startMenu;
         public static PauseMenu pauseMenu;
         public static Song song;
+
+        public static bool ClickedMenuButton = false;
 
     }
     public static class Settings
@@ -95,8 +96,8 @@ namespace Tetris
             Globals.buttonTextures[(1, false)] = Content.Load<Texture2D>("option1");
             Globals.buttonTextures[(1, true)] = Content.Load<Texture2D>("option2");
             
-            Globals.buttonTextures[(2, false)] = Content.Load<Texture2D>("buttonnew1");
-            Globals.buttonTextures[(2, true)] = Content.Load<Texture2D>("buttonnew2");
+            Globals.buttonTextures[(2, false)] = Content.Load<Texture2D>("music1");
+            Globals.buttonTextures[(2, true)] = Content.Load<Texture2D>("music2");
             
             Globals.buttonTextures[(3, false)] = Content.Load<Texture2D>("buttonnew1");
             Globals.buttonTextures[(3, true)] = Content.Load<Texture2D>("buttonnew2");
@@ -104,12 +105,15 @@ namespace Tetris
             Globals.buttonTextures[(4, false)] = Content.Load<Texture2D>("exit1");
             Globals.buttonTextures[(4, true)] = Content.Load<Texture2D>("exit2");
 
+            Globals.buttonTextures[(5, false)] = Content.Load<Texture2D>("buttonnew1");
+            Globals.buttonTextures[(5, true)] = Content.Load<Texture2D>("buttonnew2");
+
 
 
             Globals.startMenu = new StartMenu();
             Globals.pauseMenu = new PauseMenu();
             Globals.optionsMenu = new OptionsMenu();
-
+            Globals.startMenu.Enable();
 
             Globals.song = Content.Load<Song>("tetris");
             MediaPlayer.Play(Globals.song);
@@ -120,16 +124,18 @@ namespace Tetris
             Globals.keyboard.Update();
             Globals.mouse.Update();
 
-            
-            Globals.optionsMenu.Update();
-            Globals.pauseMenu.Update();
+
             Globals.startMenu.Update();
-           
-            if(Globals.state == GameState.gameRunning)
+            Globals.pauseMenu.Update();
+            Globals.optionsMenu.Update();
+
+
+            if (Globals.state == GameState.gameRunning)
             {
                 if(Globals.keyboard.ReleasedThisFrame(Keys.Escape))
                 {
                     Globals.state = GameState.pauseMenu;
+                    Globals.pauseMenu.Enable();
                     return;
                 } 
                 if(!Globals.scene.Update(gameTime))
@@ -138,7 +144,9 @@ namespace Tetris
                     Globals.state = GameState.startMenu;
                 }
             }
-                    
+
+            if (Globals.ClickedMenuButton && Globals.mouse.IsReleased(MouseButtons.Left)) Globals.ClickedMenuButton = false;
+
             base.Update(gameTime);
         }
 
@@ -169,6 +177,9 @@ namespace Tetris
                     Globals.scene.Draw(spriteBatch);
                     break;
             }
+
+            spriteBatch.DrawString(Globals.font, Globals.state.ToString(), new Vector2(0, 0), Color.Black);
+            spriteBatch.DrawString(Globals.font, Globals.ClickedMenuButton.ToString(), new Vector2(0, 20), Color.Black);
 
             spriteBatch.End();
 

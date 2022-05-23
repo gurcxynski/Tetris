@@ -11,12 +11,11 @@ namespace Tetris.Menus
             position = arg;
             id = 3;
         }
-        protected override void OnClick(MouseButtons button)
+        protected override void Action()
         {
-            if(hovered && Globals.state == GameState.optionsMenu)
-            {
-                Globals.state = GameState.startMenu;
-            }
+            Globals.state = GameState.startMenu;
+            Disable();
+            Globals.startMenu.Enable();
         }
     }
 }
