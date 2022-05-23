@@ -11,7 +11,8 @@ namespace Tetris.Buttons
     {
         public PlayButton(Vector2 arg)
         {
-            position = arg - new Vector2(texture.Width / 2, texture.Height / 2);
+            position = arg;
+            id = 0;
         }
         protected override void OnClick(MouseButtons button)
         {

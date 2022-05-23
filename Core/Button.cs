@@ -9,10 +9,11 @@ namespace Tetris.Core
         protected Vector2 position;
         protected Texture2D texture;
         protected bool hovered = false;
+        protected int id;
         protected Button()
         {
             Globals.mouse.OnMouseButtonPressed += OnClick; 
-            texture = Globals.buttonTextures.Key;
+            texture = Globals.buttonTextures[(id, false)];
         }
         public void Draw(SpriteBatch spriteBatch)
         {
@@ -34,8 +35,7 @@ namespace Tetris.Core
         {
             hovered = EnteredButton();
 
-            if (hovered && Globals.state != GameState.gameRunning) texture = Globals.buttonTextures.Value;
-            else texture = Globals.buttonTextures.Key;
+            texture = Globals.buttonTextures[(id, hovered)];
         }
 
         protected abstract void OnClick(MouseButtons button);

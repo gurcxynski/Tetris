@@ -12,7 +12,8 @@ namespace Tetris.Buttons
     {
         public MusicButton(Vector2 arg)
         {
-            position = arg - new Vector2(texture.Width / 2, texture.Height / 2);
+            position = arg;
+            id = 2;
         }
         protected override void OnClick(MouseButtons button)
         {

@@ -2,20 +2,21 @@ using Microsoft.Xna.Framework;
 using MonoGame.EasyInput;
 using System;
 using Tetris.Core;
+using Tetris;
 namespace Tetris.Buttons
 {
-    public class OptionsButton: Button
+    public class ExitButton: Button
     {
-        public OptionsButton(Vector2 arg)
+        public ExitButton(Vector2 arg)
         {
             position = arg;
-            id = 1;
+            id = 4;
         }
         protected override void OnClick(MouseButtons button)
         {
-            if(hovered && (Globals.state == GameState.startMenu || Globals.state == GameState.pauseMenu))
+            if (hovered && (Globals.state == GameState.startMenu || Globals.state == GameState.pauseMenu))
             {
-                Globals.state = GameState.optionsMenu;
+                Tetris.Game1.self.Exit();
             }
         }
     }

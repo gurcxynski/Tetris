@@ -14,7 +14,7 @@ namespace Tetris
     public static class Globals
     {
         public static Dictionary<Piece.Type, Texture2D> blockTextures;
-        public static KeyValuePair<Texture2D, Texture2D> buttonTextures;
+        public static Dictionary<(int, bool), Texture2D> buttonTextures;
 
         public static GameScene scene;
 
@@ -32,6 +32,7 @@ namespace Tetris
         public static StartMenu startMenu;
         public static PauseMenu pauseMenu;
         public static Song song;
+
     }
     public static class Settings
     {
@@ -39,6 +40,8 @@ namespace Tetris
     }
     public class Game1 : Game
     {
+        public static Game1 self;
+
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Texture2D back;
@@ -52,9 +55,9 @@ namespace Tetris
             Globals.keyboard = new EasyKeyboard();
             Globals.mouse = new EasyMouse();
             Globals.scene = new GameScene();
-            Globals.startMenu = new StartMenu();
-            Globals.pauseMenu = new PauseMenu();
-            Globals.optionsMenu = new OptionsMenu();
+            Globals.buttonTextures = new Dictionary<(int, bool), Texture2D>();
+
+            self = this;
         }
         protected override void Initialize()
         {
@@ -65,10 +68,6 @@ namespace Tetris
             graphics.PreferredBackBufferHeight = 30 * Globals.maxY;
 
             graphics.ApplyChanges();
-
-            Globals.startMenu.Add(new PlayButton(new Vector2(graphics.PreferredBackBufferWidth/2, 200)));
-            Globals.startMenu.Add(new MusicButton(new Vector2(graphics.PreferredBackBufferWidth / 2, 250)));
-
         }
         protected override void LoadContent()
         {
@@ -90,7 +89,27 @@ namespace Tetris
                 [Piece.Type.L] = Content.Load<Texture2D>("orange")
             };
 
-            Globals.buttonTextures = new KeyValuePair<Texture2D, Texture2D>(Content.Load<Texture2D>("buttonnew1"), Content.Load<Texture2D>("buttonnew2"));
+            Globals.buttonTextures[(0, false)] = Content.Load<Texture2D>("buttonnew1");
+            Globals.buttonTextures[(0, true)] = Content.Load<Texture2D>("buttonnew2");
+            
+            Globals.buttonTextures[(1, false)] = Content.Load<Texture2D>("option1");
+            Globals.buttonTextures[(1, true)] = Content.Load<Texture2D>("option2");
+            
+            Globals.buttonTextures[(2, false)] = Content.Load<Texture2D>("buttonnew1");
+            Globals.buttonTextures[(2, true)] = Content.Load<Texture2D>("buttonnew2");
+            
+            Globals.buttonTextures[(3, false)] = Content.Load<Texture2D>("buttonnew1");
+            Globals.buttonTextures[(3, true)] = Content.Load<Texture2D>("buttonnew2");
+
+            Globals.buttonTextures[(4, false)] = Content.Load<Texture2D>("exit1");
+            Globals.buttonTextures[(4, true)] = Content.Load<Texture2D>("exit2");
+
+
+
+            Globals.startMenu = new StartMenu();
+            Globals.pauseMenu = new PauseMenu();
+            Globals.optionsMenu = new OptionsMenu();
+
 
             Globals.song = Content.Load<Song>("tetris");
             MediaPlayer.Play(Globals.song);
@@ -101,31 +120,25 @@ namespace Tetris
             Globals.keyboard.Update();
             Globals.mouse.Update();
 
-
-            switch (Globals.state)
+            
+            Globals.optionsMenu.Update();
+            Globals.pauseMenu.Update();
+            Globals.startMenu.Update();
+           
+            if(Globals.state == GameState.gameRunning)
             {
-                case GameState.startMenu:
-                    Globals.startMenu.Update();
-                    break;
-                case GameState.pauseMenu:
-                    Globals.pauseMenu.Update();
-                    break;
-                case GameState.optionsMenu:
-                    Globals.optionsMenu.Update();
-                    break;
-                case GameState.gameRunning:
-                    if(Globals.keyboard.ReleasedThisFrame(Keys.Escape))
-                    {
-                        Globals.state = GameState.pauseMenu;
-                        return;
-                    } 
-                    if(!Globals.scene.Update(gameTime))
-                    {
-                        Globals.scene = new GameScene();
-                        Globals.state = GameState.startMenu;
-                    }
-                    break;
+                if(Globals.keyboard.ReleasedThisFrame(Keys.Escape))
+                {
+                    Globals.state = GameState.pauseMenu;
+                    return;
+                } 
+                if(!Globals.scene.Update(gameTime))
+                {
+                    Globals.scene = new GameScene();
+                    Globals.state = GameState.startMenu;
+                }
             }
+                    
             base.Update(gameTime);
         }
 
