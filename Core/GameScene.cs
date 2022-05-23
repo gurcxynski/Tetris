@@ -85,7 +85,7 @@ namespace Tetris.Core
         }
         void HandleInput(Keys button)
         {
-            if (!Globals.gameRunning) return;
+            if (Globals.state != GameState.gameRunning) return;
             if (button == Keys.P) pause = !pause;
             if (pause) return;
             switch (button)

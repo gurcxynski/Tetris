@@ -13,23 +13,20 @@ namespace Tetris.Buttons
         public MusicButton(Vector2 arg)
         {
             position = arg - new Vector2(texture.Width / 2, texture.Height / 2);
-            text = "DISABLE MUSIC";
         }
         protected override void OnClick(MouseButtons button)
         {
-            if (hovered && !Globals.gameRunning)
+            if (hovered && Globals.state == GameState.optionsMenu)
             {
-                if (Globals.music)
+                if (Settings.music)
                 {
-                    Globals.music = false;
+                    Settings.music = false;
                     MediaPlayer.Stop();
-                    text = "ENABLE MUSIC";
                 }
                 else
                 {
                     MediaPlayer.Play(Globals.song);
-                    Globals.music = true;
-                    text = "DISABLE MUSIC";
+                    Settings.music = true;
                 }
             }
         }

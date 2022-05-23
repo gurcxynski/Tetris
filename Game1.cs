@@ -5,11 +5,12 @@ using System.Collections.Generic;
 using Tetris.Core;
 using MonoGame.EasyInput;
 using Microsoft.Xna.Framework.Input;
-using System;
+using Tetris.Menus;
 using Tetris.Buttons;
 
 namespace Tetris
 {
+    public enum GameState { startMenu, pauseMenu, gameRunning, optionsMenu }
     public static class Globals
     {
         public static Dictionary<Piece.Type, Texture2D> blockTextures;
@@ -22,14 +23,19 @@ namespace Tetris
         public static Vector2 queueLastPos = new Vector2(15, 4);
         public static Vector2 startPos = new Vector2(7, 1);
 
-        public static bool gameRunning = false;
-        public static bool music = true;
+        public static GameState state = GameState.startMenu;
 
         public static SpriteFont font;
         public static EasyKeyboard keyboard;
         public static EasyMouse mouse;
-        public static Menu menu;
+        public static OptionsMenu optionsMenu;
+        public static StartMenu startMenu;
+        public static PauseMenu pauseMenu;
         public static Song song;
+    }
+    public static class Settings
+    {
+        public static bool music = true;
     }
     public class Game1 : Game
     {
@@ -46,9 +52,9 @@ namespace Tetris
             Globals.keyboard = new EasyKeyboard();
             Globals.mouse = new EasyMouse();
             Globals.scene = new GameScene();
-            Globals.menu = new Menu();
-
-
+            Globals.startMenu = new StartMenu();
+            Globals.pauseMenu = new PauseMenu();
+            Globals.optionsMenu = new OptionsMenu();
         }
         protected override void Initialize()
         {
@@ -60,8 +66,8 @@ namespace Tetris
 
             graphics.ApplyChanges();
 
-            Globals.menu.Add(new PlayButton(new Vector2(graphics.PreferredBackBufferWidth/2, 200)));
-            Globals.menu.Add(new MusicButton(new Vector2(graphics.PreferredBackBufferWidth / 2, 250)));
+            Globals.startMenu.Add(new PlayButton(new Vector2(graphics.PreferredBackBufferWidth/2, 200)));
+            Globals.startMenu.Add(new MusicButton(new Vector2(graphics.PreferredBackBufferWidth / 2, 250)));
 
         }
         protected override void LoadContent()
@@ -95,20 +101,31 @@ namespace Tetris
             Globals.keyboard.Update();
             Globals.mouse.Update();
 
-            if (Globals.keyboard.ReleasedThisFrame(Keys.Escape) && Globals.gameRunning) 
+
+            switch (Globals.state)
             {
-                Globals.gameRunning = false;
-                return;
+                case GameState.startMenu:
+                    Globals.startMenu.Update();
+                    break;
+                case GameState.pauseMenu:
+                    Globals.pauseMenu.Update();
+                    break;
+                case GameState.optionsMenu:
+                    Globals.optionsMenu.Update();
+                    break;
+                case GameState.gameRunning:
+                    if(Globals.keyboard.ReleasedThisFrame(Keys.Escape))
+                    {
+                        Globals.state = GameState.pauseMenu;
+                        return;
+                    } 
+                    if(!Globals.scene.Update(gameTime))
+                    {
+                        Globals.scene = new GameScene();
+                        Globals.state = GameState.startMenu;
+                    }
+                    break;
             }
-
-            if (Globals.gameRunning && !Globals.scene.Update(gameTime))
-            {
-                Globals.scene = new GameScene();
-                Globals.gameRunning = !Globals.gameRunning;
-            }
-
-            if (!Globals.gameRunning) Globals.menu.Update();
-
             base.Update(gameTime);
         }
 
@@ -118,17 +135,28 @@ namespace Tetris
 
             spriteBatch.Begin();
 
-            if (Globals.gameRunning)
+
+
+            switch (Globals.state)
             {
-                spriteBatch.Draw(back, new Vector2(0, 0), Color.White);
-                Globals.scene.Draw(spriteBatch);
+                case GameState.startMenu:
+                    spriteBatch.Draw(m_back, new Vector2(0, 0), Color.White);
+                    Globals.startMenu.Draw(spriteBatch);
+                    break;
+                case GameState.pauseMenu:
+                    spriteBatch.Draw(m_back, new Vector2(0, 0), Color.White);
+                    Globals.pauseMenu.Draw(spriteBatch);
+                    break;
+                case GameState.optionsMenu:
+                    spriteBatch.Draw(m_back, new Vector2(0, 0), Color.White);
+                    Globals.optionsMenu.Draw(spriteBatch);
+                    break;
+                case GameState.gameRunning:
+                    spriteBatch.Draw(back, new Vector2(0, 0), Color.White);
+                    Globals.scene.Draw(spriteBatch);
+                    break;
             }
-            else
-            {
-                spriteBatch.Draw(m_back, new Vector2(0, 0), Color.White);
-                Globals.menu.Draw(spriteBatch);
-            }
-            
+
             spriteBatch.End();
 
             base.Draw(gameTime);

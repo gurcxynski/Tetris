@@ -8,7 +8,6 @@ namespace Tetris.Core
     {
         protected Vector2 position;
         protected Texture2D texture;
-        protected string text;
         protected bool hovered = false;
         protected Button()
         {
@@ -18,7 +17,7 @@ namespace Tetris.Core
         public void Draw(SpriteBatch spriteBatch)
         {
              spriteBatch.Draw(texture, position, Color.White);
-             spriteBatch.DrawString(Globals.font, text, new Vector2((position.X + texture.Width / 2) - Globals.font.MeasureString(text).X / 2, position.Y + 5), Color.Black);
+             //spriteBatch.DrawString(Globals.font, text, new Vector2((position.X + texture.Width / 2) - Globals.font.MeasureString(text).X / 2, position.Y + 5), Color.Black);
         }
         protected bool EnteredButton()
         {
@@ -35,7 +34,7 @@ namespace Tetris.Core
         {
             hovered = EnteredButton();
 
-            if (hovered && !Globals.gameRunning) texture = Globals.buttonTextures.Value;
+            if (hovered && Globals.state != GameState.gameRunning) texture = Globals.buttonTextures.Value;
             else texture = Globals.buttonTextures.Key;
         }
 

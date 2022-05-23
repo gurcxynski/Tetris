@@ -3,10 +3,10 @@ using System.Collections.Generic;
 
 namespace Tetris.Core
 {
-    public class Menu
+    public abstract class Menu
     {
-        readonly List<Button> buttons;
-        public Menu()
+        readonly protected List<Button> buttons;
+        protected Menu()
         {
             buttons = new List<Button>();
         }

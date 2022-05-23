@@ -12,13 +12,12 @@ namespace Tetris.Buttons
         public PlayButton(Vector2 arg)
         {
             position = arg - new Vector2(texture.Width / 2, texture.Height / 2);
-            text = "";
         }
         protected override void OnClick(MouseButtons button)
         {
-            if (hovered && !Globals.gameRunning)
+            if (hovered && Globals.state != GameState.gameRunning)
             {
-                Globals.gameRunning = true;
+                Globals.state = GameState.gameRunning;
             }
         }
     }
