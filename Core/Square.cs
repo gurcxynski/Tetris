@@ -36,17 +36,23 @@ namespace Tetris.Core
         {
             _position = pos;
         }
-        public void Move(Piece.Direction direction)
+        public void Move(Piece.Direction direction, float amount = 1)
         {
-            if (direction == Piece.Direction.Left) _position += new Vector2(-1, 0);
-            if (direction == Piece.Direction.Right) _position += new Vector2(1, 0);
-            if (direction == Piece.Direction.Down) _position += new Vector2(0, 1);
-        }
-        public void Move(Piece.Direction direction, float amount)
-        {
-            if (direction == Piece.Direction.Left) _position += new Vector2(-amount, 0);
-            if (direction == Piece.Direction.Right) _position += new Vector2(amount, 0);
-            if (direction == Piece.Direction.Down) _position += new Vector2(0, amount);
+            switch (direction)
+            {
+                case Piece.Direction.Left:
+                    _position += new Vector2(-amount, 0);
+                    break;
+                case Piece.Direction.Right:
+                    _position += new Vector2(amount, 0);
+                    break;
+                case Piece.Direction.Up:
+                    _position += new Vector2(0, -amount);
+                    break;
+                case Piece.Direction.Down:
+                    _position += new Vector2(0, amount);
+                    break;
+            }
         }
         public Vector2 GetPos()
         {

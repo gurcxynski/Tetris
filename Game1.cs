@@ -81,32 +81,32 @@ namespace Tetris
 
             Globals.blockTextures = new Dictionary<Piece.Type, Texture2D>
             {
-                [Piece.Type.Z] = Content.Load<Texture2D>("red"),
-                [Piece.Type.I] = Content.Load<Texture2D>("blue"),
-                [Piece.Type.S] = Content.Load<Texture2D>("green"),
-                [Piece.Type.O] = Content.Load<Texture2D>("yellow"),
-                [Piece.Type.J] = Content.Load<Texture2D>("pink"),
-                [Piece.Type.T] = Content.Load<Texture2D>("purple"),
-                [Piece.Type.L] = Content.Load<Texture2D>("orange")
+                [Piece.Type.Z] = Content.Load<Texture2D>("blocks/red"),
+                [Piece.Type.I] = Content.Load<Texture2D>("blocks/blue"),
+                [Piece.Type.S] = Content.Load<Texture2D>("blocks/green"),
+                [Piece.Type.O] = Content.Load<Texture2D>("blocks/yellow"),
+                [Piece.Type.J] = Content.Load<Texture2D>("blocks/pink"),
+                [Piece.Type.T] = Content.Load<Texture2D>("blocks/purple"),
+                [Piece.Type.L] = Content.Load<Texture2D>("blocks/orange")
             };
 
-            Globals.buttonTextures[(0, false)] = Content.Load<Texture2D>("buttonnew1");
-            Globals.buttonTextures[(0, true)] = Content.Load<Texture2D>("buttonnew2");
+            Globals.buttonTextures[(0, false)] = Content.Load<Texture2D>("buttons/buttonnew1");
+            Globals.buttonTextures[(0, true)] = Content.Load<Texture2D>("buttons/buttonnew2");
             
-            Globals.buttonTextures[(1, false)] = Content.Load<Texture2D>("option1");
-            Globals.buttonTextures[(1, true)] = Content.Load<Texture2D>("option2");
+            Globals.buttonTextures[(1, false)] = Content.Load<Texture2D>("buttons/option1");
+            Globals.buttonTextures[(1, true)] = Content.Load<Texture2D>("buttons/option2");
             
-            Globals.buttonTextures[(2, false)] = Content.Load<Texture2D>("music1");
-            Globals.buttonTextures[(2, true)] = Content.Load<Texture2D>("music2");
+            Globals.buttonTextures[(2, false)] = Content.Load<Texture2D>("buttons/music1");
+            Globals.buttonTextures[(2, true)] = Content.Load<Texture2D>("buttons/music2");
             
-            Globals.buttonTextures[(3, false)] = Content.Load<Texture2D>("buttonnew1");
-            Globals.buttonTextures[(3, true)] = Content.Load<Texture2D>("buttonnew2");
+            Globals.buttonTextures[(3, false)] = Content.Load<Texture2D>("buttons/buttonnew1");
+            Globals.buttonTextures[(3, true)] = Content.Load<Texture2D>("buttons/buttonnew2");
 
-            Globals.buttonTextures[(4, false)] = Content.Load<Texture2D>("exit1");
-            Globals.buttonTextures[(4, true)] = Content.Load<Texture2D>("exit2");
+            Globals.buttonTextures[(4, false)] = Content.Load<Texture2D>("buttons/exit1");
+            Globals.buttonTextures[(4, true)] = Content.Load<Texture2D>("buttons/exit2");
 
-            Globals.buttonTextures[(5, false)] = Content.Load<Texture2D>("buttonnew1");
-            Globals.buttonTextures[(5, true)] = Content.Load<Texture2D>("buttonnew2");
+            Globals.buttonTextures[(5, false)] = Content.Load<Texture2D>("buttons/buttonnew1");
+            Globals.buttonTextures[(5, true)] = Content.Load<Texture2D>("buttons/buttonnew2");
 
 
 
@@ -180,6 +180,7 @@ namespace Tetris
 
             spriteBatch.DrawString(Globals.font, Globals.state.ToString(), new Vector2(0, 0), Color.Black);
             spriteBatch.DrawString(Globals.font, Globals.ClickedMenuButton.ToString(), new Vector2(0, 20), Color.Black);
+            if(Globals.state == GameState.optionsMenu) spriteBatch.DrawString(Globals.font, MediaPlayer.Volume.ToString(), new Vector2(350, 375), Color.Black);
 
             spriteBatch.End();
 

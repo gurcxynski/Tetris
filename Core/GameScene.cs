@@ -140,20 +140,15 @@ namespace Tetris.Core
                         if (item.GetPos().Y < i) item.Move(Piece.Direction.Down);
                     });
 
-                    if (heldPiece != null)
-                    {
-                        Globals.scene.heldPiece.squares.ForEach(delegate (Square item)
-                        {
-                            item.Move(Piece.Direction.Up);
-                        });
-                    }
+                    if (!(heldPiece is null)) heldPiece.MoveTo(Globals.holdPos);
 
-                    foreach (var item in queue)
+                    foreach (var piece in queue)
                     {
-                        item.squares.ForEach(delegate (Square item2)
-                        {
-                            item2.Move(Piece.Direction.Up);
-                        });
+                        //piece.squares.ForEach(delegate (Square square)
+                        //{
+                        //    if (square.GetPos().Y < i) square.Move(Piece.Direction.Up);
+                        //});
+                        piece.Move(Piece.Direction.Up);
                     }
                 }
             }
