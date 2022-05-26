@@ -92,7 +92,7 @@ namespace Tetris.Core
         {
             if (Globals.state != GameState.gameRunning) return;
             if (button == Keys.P) pause = !pause;
-            if (pause) return;
+            //if (pause) return;
             switch (button)
             {
                 case Keys.Left:
@@ -159,7 +159,7 @@ namespace Tetris.Core
         {
             if (!initialized) Initialize();
 
-            if (updateTime.TotalGameTime.TotalMilliseconds - sinceMove > 150 && !pause)
+            if (updateTime.TotalGameTime.TotalMilliseconds - sinceMove > 150 && !pause && !fallingPiece.isTurning)
             {
                 sinceMove = updateTime.TotalGameTime.TotalMilliseconds;
 

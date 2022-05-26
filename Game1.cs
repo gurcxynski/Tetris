@@ -119,7 +119,7 @@ namespace Tetris
             Globals.optionsMenu = new OptionsMenu();
             Globals.startMenu.Enable();
 
-            Globals.scene.pauseButton = new PauseButton(new Vector2(300, 50));
+            Globals.scene.pauseButton = new PauseButton(new Vector2(450, 10));
             Globals.scene.pauseButton.Enable();
 
 
