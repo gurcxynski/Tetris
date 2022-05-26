@@ -6,9 +6,8 @@ namespace Tetris.Buttons
 {
     public class EnableMusicButton : Button
     {
-        public EnableMusicButton(Vector2 arg)
+        public EnableMusicButton(Vector2 arg) : base(arg)
         {
-            position = arg;
             id = 2;
         }
         protected override void Action()

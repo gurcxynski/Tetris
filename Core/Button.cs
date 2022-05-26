@@ -11,15 +11,15 @@ namespace Tetris.Core
         protected bool hovered = false;
         protected int id;
         protected bool enabled = false;
-        protected Button()
+        protected Button(Vector2 arg)
         {
             Globals.mouse.OnMouseButtonPressed += OnClick; 
             texture = Globals.buttonTextures[(id, false)];
+            position = arg;
         }
         public void Draw(SpriteBatch spriteBatch)
         {
              spriteBatch.Draw(texture, position, Color.White);
-             //spriteBatch.DrawString(Globals.font, text, new Vector2((position.X + texture.Width / 2) - Globals.font.MeasureString(text).X / 2, position.Y + 5), Color.Black);
         }
         protected bool EnteredButton()
         {

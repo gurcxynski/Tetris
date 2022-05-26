@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using System.Collections.Generic;
+using Tetris.Buttons;
 
 namespace Tetris.Core
 {
@@ -14,6 +15,8 @@ namespace Tetris.Core
 
         public Piece fallingPiece;
         Piece heldPiece;
+
+        public PauseButton pauseButton;
 
         double sinceMove = 0;
         bool initialized = false;
@@ -33,6 +36,8 @@ namespace Tetris.Core
             queue.Enqueue(new Piece(Globals.queueLastPos));
 
             fallingPiece = new Piece(Globals.startPos);
+
+            
 
             initialized = true;
 
@@ -144,10 +149,6 @@ namespace Tetris.Core
 
                     foreach (var piece in queue)
                     {
-                        //piece.squares.ForEach(delegate (Square square)
-                        //{
-                        //    if (square.GetPos().Y < i) square.Move(Piece.Direction.Up);
-                        //});
                         piece.Move(Piece.Direction.Up);
                     }
                 }
@@ -167,6 +168,7 @@ namespace Tetris.Core
                     if (!TakeNewPiece()) return false;
                 }
             }
+            pauseButton.Update();
             return true;
         }
         public bool IsTaken(Vector2 pos)
@@ -181,6 +183,7 @@ namespace Tetris.Core
         public void Draw(SpriteBatch spriteBatch)
         {
             squares.ForEach(delegate (Square item) { item.Draw(spriteBatch); });
+            pauseButton.Draw(spriteBatch);
         }
     }
 }

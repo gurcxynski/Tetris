@@ -6,6 +6,7 @@ using Tetris.Core;
 using MonoGame.EasyInput;
 using Microsoft.Xna.Framework.Input;
 using Tetris.Menus;
+using Tetris.Buttons;
 
 namespace Tetris
 {
@@ -99,8 +100,8 @@ namespace Tetris
             Globals.buttonTextures[(2, false)] = Content.Load<Texture2D>("buttons/music1");
             Globals.buttonTextures[(2, true)] = Content.Load<Texture2D>("buttons/music2");
             
-            Globals.buttonTextures[(3, false)] = Content.Load<Texture2D>("buttons/buttonnew1");
-            Globals.buttonTextures[(3, true)] = Content.Load<Texture2D>("buttons/buttonnew2");
+            Globals.buttonTextures[(3, false)] = Content.Load<Texture2D>("buttons/return1");
+            Globals.buttonTextures[(3, true)] = Content.Load<Texture2D>("buttons/return2");
 
             Globals.buttonTextures[(4, false)] = Content.Load<Texture2D>("buttons/exit1");
             Globals.buttonTextures[(4, true)] = Content.Load<Texture2D>("buttons/exit2");
@@ -108,12 +109,20 @@ namespace Tetris
             Globals.buttonTextures[(5, false)] = Content.Load<Texture2D>("buttons/buttonnew1");
             Globals.buttonTextures[(5, true)] = Content.Load<Texture2D>("buttons/buttonnew2");
 
+            Globals.buttonTextures[(6, false)] = Content.Load<Texture2D>("buttons/pause1");
+            Globals.buttonTextures[(6, true)] = Content.Load<Texture2D>("buttons/pause2");
+
 
 
             Globals.startMenu = new StartMenu();
             Globals.pauseMenu = new PauseMenu();
             Globals.optionsMenu = new OptionsMenu();
             Globals.startMenu.Enable();
+
+            Globals.scene.pauseButton = new PauseButton(new Vector2(300, 50));
+            Globals.scene.pauseButton.Enable();
+
+
 
             Globals.song = Content.Load<Song>("tetris");
             MediaPlayer.Play(Globals.song);
@@ -124,25 +133,15 @@ namespace Tetris
             Globals.keyboard.Update();
             Globals.mouse.Update();
 
-
             Globals.startMenu.Update();
             Globals.pauseMenu.Update();
             Globals.optionsMenu.Update();
 
 
-            if (Globals.state == GameState.gameRunning)
+            if (Globals.state == GameState.gameRunning && !Globals.scene.Update(gameTime))
             {
-                if(Globals.keyboard.ReleasedThisFrame(Keys.Escape))
-                {
-                    Globals.state = GameState.pauseMenu;
-                    Globals.pauseMenu.Enable();
-                    return;
-                } 
-                if(!Globals.scene.Update(gameTime))
-                {
-                    Globals.scene = new GameScene();
-                    Globals.state = GameState.startMenu;
-                }
+                Globals.scene = new GameScene();
+                Globals.state = GameState.startMenu;
             }
 
             if (Globals.ClickedMenuButton && Globals.mouse.IsReleased(MouseButtons.Left)) Globals.ClickedMenuButton = false;

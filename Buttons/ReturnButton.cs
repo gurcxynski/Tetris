@@ -6,9 +6,8 @@ namespace Tetris.Menus
 {
     class ReturnButton : Button
     {
-        public ReturnButton(Vector2 arg)
+        public ReturnButton(Vector2 arg) : base(arg)
         {
-            position = arg;
             id = 3;
         }
         protected override void Action()

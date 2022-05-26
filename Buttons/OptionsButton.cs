@@ -6,9 +6,8 @@ namespace Tetris.Buttons
 {
     public class OptionsButton: Button
     {
-        public OptionsButton(Vector2 arg)
+        public OptionsButton(Vector2 arg) : base(arg)
         {
-            position = arg;
             id = 1;
         }
         protected override void Action()
