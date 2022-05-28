@@ -15,6 +15,8 @@ namespace Tetris.Core
         Direction direction;
         Vector2 position;
         readonly Random rnd;
+        public bool isTurning = false;
+
         public Piece(Vector2 startPos)
         {
             squares = new List<Square>();
@@ -109,12 +111,26 @@ namespace Tetris.Core
             };
             return true;
         }
+        bool MoveToPos(List<Vector2> arg)
+        {
+            bool taken = false;
+            arg.ForEach(delegate (Vector2 pos) { if (Globals.scene.IsTaken(pos)) taken = true; });
+            if(taken) return false;
+            for (int i = 1; i < 4; i++)
+                {
+                    squares[i].MoveTo(arg[i - 1]);
+                }
+            return true;
+        }
         public void Turn()
         {
             GameScene scene = Globals.scene;
+            isTurning = true;
+            List<Vector2> list = new List<Vector2>();
             switch (type)
             {
                 case Type.O:
+                    isTurning = false;
                     return;
                 case Type.T:
                     if (direction == Direction.Up)
@@ -123,6 +139,7 @@ namespace Tetris.Core
                         {
                             direction = Direction.Right;
                         }
+                        isTurning = false;
                         return;
                     }
                     if (direction == Direction.Right)
@@ -131,6 +148,7 @@ namespace Tetris.Core
                         {
                             direction = Direction.Down;
                         }
+                        isTurning = false;
                         return;
                     }
                     if (direction == Direction.Down)
@@ -139,6 +157,7 @@ namespace Tetris.Core
                         {
                             direction = Direction.Left;
                         }
+                        isTurning = false;
                         return;
                     }
                     if (direction == Direction.Left)
@@ -147,6 +166,7 @@ namespace Tetris.Core
                         {
                             direction = Direction.Up;
                         }
+                        isTurning = false;
                         return;
                     }
                     break;
@@ -163,6 +183,7 @@ namespace Tetris.Core
                         }
                         position += new Vector2(0, 1);
                         direction = Direction.Right;
+                        isTurning = false;
                         return;
                     }
                     if (direction == Direction.Right)
@@ -177,6 +198,7 @@ namespace Tetris.Core
                         }
                         position += new Vector2(-1, 0);
                         direction = Direction.Down;
+                        isTurning = false;
                         return;
                     }
                     if (direction == Direction.Down)
@@ -191,6 +213,7 @@ namespace Tetris.Core
                         }
                         position += new Vector2(0, -1);
                         direction = Direction.Left;
+                        isTurning = false;
                         return;
                     }
                     if (direction == Direction.Left)
@@ -205,322 +228,181 @@ namespace Tetris.Core
                         }
                         position += new Vector2(1, 0);
                         direction = Direction.Up;
+                        isTurning = false;
                         return;
                     }
                     break;
                 case Type.S:
-                    if (direction == Direction.Up)
+                    switch (direction)
                     {
-                        List<Vector2> list = new List<Vector2>
-                        {
-                            position + new Vector2(1, 0),
-                            position + new Vector2(0, 1),
-                            position + new Vector2(-1, 1)
-                        };
-
-                        list.ForEach(delegate (Vector2 pos) { if (scene.IsTaken(pos)) return; });
-
-                        for (int i = 1; i < 4; i++)
-                        {
-                            squares[i].MoveTo(list[i - 1]);
-                        }
-
-                        direction = Direction.Right;
-                        return;
-                    }
-                    if (direction == Direction.Right)
-                    {
-                        List<Vector2> list = new List<Vector2>
-                        {
-                            position + new Vector2(-1, -1),
-                            position + new Vector2(-1, 0),
-                            position + new Vector2(0, 1)
-                        };
-
-                        list.ForEach(delegate (Vector2 pos) { if (scene.IsTaken(pos)) return; });
-
-                        for (int i = 1; i < 4; i++)
-                        {
-                            squares[i].MoveTo(list[i - 1]);
-                        }
-
-                        direction = Direction.Down;
-                        return;
-                    }
-                    if (direction == Direction.Down)
-                    {
-                        List<Vector2> list = new List<Vector2>
-                        {
-                            position + new Vector2(0, -1),
-                            position + new Vector2(-1, 0),
-                            position + new Vector2(1, -1)
-                        };
-
-                        list.ForEach(delegate (Vector2 pos) { if (scene.IsTaken(pos)) return; });
-
-                        for (int i = 1; i < 4; i++)
-                        {
-                            squares[i].MoveTo(list[i - 1]);
-                        }
-
-                        direction = Direction.Left;
-                        return;
-                    }
-                    if (direction == Direction.Left)
-                    {
-                        List<Vector2> list = new List<Vector2>
-                        {
-                            position + new Vector2(-1, 0),
-                            position + new Vector2(0, 1),
-                            position + new Vector2(1, 1)
-                        };
-
-                        list.ForEach(delegate (Vector2 pos) { if (scene.IsTaken(pos)) return; });
-
-                        for (int i = 1; i < 4; i++)
-                        {
-                            squares[i].MoveTo(list[i - 1]);
-                        }
-
-                        direction = Direction.Up;
-                        return;
+                        case Direction.Up:
+                            list = new List<Vector2>
+                            {
+                                position + new Vector2(1, 0),
+                                position + new Vector2(0, 1),
+                                position + new Vector2(-1, 1)
+                            };
+                            direction = Direction.Right;
+                            break;
+                        case Direction.Right:
+                            list = new List<Vector2>
+                            {
+                                position + new Vector2(-1, -1),
+                                position + new Vector2(-1, 0),
+                                position + new Vector2(0, 1)
+                            };
+                            direction = Direction.Down;
+                            break;
+                        case Direction.Down:
+                            list = new List<Vector2>
+                            {
+                                position + new Vector2(0, -1),
+                                position + new Vector2(-1, 0),
+                                position + new Vector2(1, -1)
+                            };
+                            direction = Direction.Left;
+                            break;
+                        case Direction.Left:
+                            list = new List<Vector2>
+                            {
+                                position + new Vector2(-1, 0),
+                                position + new Vector2(0, 1),
+                                position + new Vector2(1, 1)
+                            };
+                            direction = Direction.Up;
+                            break;
                     }
                     break;
                 case Type.Z:
-                    if (direction == Direction.Up)
+                    switch (direction)
                     {
-                        List<Vector2> list = new List<Vector2>
-                        {
-                            position + new Vector2(-1, 0),
-                            position + new Vector2(0, 1),
-                            position + new Vector2(1, 1)
-                        };
-
-                        list.ForEach(delegate (Vector2 pos) { if (scene.IsTaken(pos)) return; });
-
-                        for (int i = 1; i < 4; i++)
-                        {
-                            squares[i].MoveTo(list[i - 1]);
-                        }
-
-                        direction = Direction.Right;
-                        return;
-                    }
-                    if (direction == Direction.Right)
-                    {
-                        List<Vector2> list = new List<Vector2>
-                        {
-                            position + new Vector2(-1, 0),
-                            position + new Vector2(0, -1),
-                            position + new Vector2(-1, 1)
-                        };
-
-                        list.ForEach(delegate (Vector2 pos) { if (scene.IsTaken(pos)) return; });
-
-                        for (int i = 1; i < 4; i++)
-                        {
-                            squares[i].MoveTo(list[i - 1]);
-                        }
-
-                        direction = Direction.Down;
-                        return;
-                    }
-                    if (direction == Direction.Down)
-                    {
-                        List<Vector2> list = new List<Vector2>
-                        {
-                            position + new Vector2(-1, -1),
-                            position + new Vector2(0, -1),
-                            position + new Vector2(1, 0)
-                        };
-
-                        list.ForEach(delegate (Vector2 pos) { if (scene.IsTaken(pos)) return; });
-
-                        for (int i = 1; i < 4; i++)
-                        {
-                            squares[i].MoveTo(list[i - 1]);
-                        }
-
-                        direction = Direction.Left;
-                        return;
-                    }
-                    if (direction == Direction.Left)
-                    {
-                        List<Vector2> list = new List<Vector2>
-                        {
-                            position + new Vector2(1, -1),
-                            position + new Vector2(1, 0),
-                            position + new Vector2(0, 1)
-                        };
-
-                        list.ForEach(delegate (Vector2 pos) { if (scene.IsTaken(pos)) return; });
-
-                        for (int i = 1; i < 4; i++)
-                        {
-                            squares[i].MoveTo(list[i - 1]);
-                        }
-
-                        direction = Direction.Up;
-                        return;
+                        case Direction.Up:
+                            list = new List<Vector2>
+                            {
+                                position + new Vector2(-1, 0),
+                                position + new Vector2(0, 1),
+                                position + new Vector2(1, 1)
+                            };
+                            direction = Direction.Right;
+                            break;
+                        case Direction.Right:
+                            list = new List<Vector2>
+                            {
+                                position + new Vector2(-1, 0),
+                                position + new Vector2(0, -1),
+                                position + new Vector2(-1, 1)
+                            };
+                            direction = Direction.Down;
+                            break;
+                        case Direction.Down:
+                            list = new List<Vector2>
+                            {
+                                position + new Vector2(-1, -1),
+                                position + new Vector2(0, -1),
+                                position + new Vector2(1, 0)
+                            };
+                            direction = Direction.Left;
+                            break;
+                        case Direction.Left:
+                            list = new List<Vector2>
+                            {
+                                position + new Vector2(1, -1),
+                                position + new Vector2(1, 0),
+                                position + new Vector2(0, 1)
+                            };
+                            direction = Direction.Up;
+                            break;
                     }
                     break;
                 case Type.J:
-                    if (direction == Direction.Up)
+                    switch (direction)
                     {
-                        List<Vector2> list = new List<Vector2>
-                        {
-                            position + new Vector2(1, 0),
-                            position + new Vector2(1, 1),
-                            position + new Vector2(-1, 0)
-                        };
+                        case Direction.Up:
+                            list = new List<Vector2>
+                            {
+                                position + new Vector2(1, 0),
+                                position + new Vector2(1, 1),
+                                position + new Vector2(-1, 0)
+                            };
+                            direction = Direction.Right;
+                            break;
+                        case Direction.Right:
+                            list = new List<Vector2>
+                            {
+                                position + new Vector2(0, -1),
+                                position + new Vector2(0, 1),
+                                position + new Vector2(-1, 1)
+                            };
+                            direction = Direction.Down;
+                            break;
+                        case Direction.Down:
+                            list = new List<Vector2>
+                            {
+                                position + new Vector2(-1, -1),
+                                position + new Vector2(-1, 0),
+                                position + new Vector2(1, 0)
+                            };
 
-                        list.ForEach(delegate (Vector2 pos) { if (scene.IsTaken(pos)) return; });
-
-                        for (int i = 1; i < 4; i++)
-                        {
-                            squares[i].MoveTo(list[i - 1]);
-                        }
-
-                        direction = Direction.Right;
-                        return;
-                    }
-                    if (direction == Direction.Right)
-                    {
-                        List<Vector2> list = new List<Vector2>
-                        {
-                            position + new Vector2(0, -1),
-                            position + new Vector2(0, 1),
-                            position + new Vector2(-1, 1)
-                        };
-
-                        list.ForEach(delegate (Vector2 pos) { if (scene.IsTaken(pos)) return; });
-
-                        for (int i = 1; i < 4; i++)
-                        {
-                            squares[i].MoveTo(list[i - 1]);
-                        }
-
-                        direction = Direction.Down;
-                        return;
-                    }
-                    if (direction == Direction.Down)
-                    {
-                        List<Vector2> list = new List<Vector2>
-                        {
-                            position + new Vector2(-1, -1),
-                            position + new Vector2(-1, 0),
-                            position + new Vector2(1, 0)
-                        };
-
-                        list.ForEach(delegate (Vector2 pos) { if (scene.IsTaken(pos)) return; });
-
-                        for (int i = 1; i < 4; i++)
-                        {
-                            squares[i].MoveTo(list[i - 1]);
-                        }
-
-                        direction = Direction.Left;
-                        return;
-                    }
-                    if (direction == Direction.Left)
-                    {
-                        List<Vector2> list = new List<Vector2>
-                        {
-                            position + new Vector2(0, -1),
-                            position + new Vector2(1, -1),
-                            position + new Vector2(0, 1)
-                        };
-
-                        list.ForEach(delegate (Vector2 pos) { if (scene.IsTaken(pos)) return; });
-
-                        for (int i = 1; i < 4; i++)
-                        {
-                            squares[i].MoveTo(list[i - 1]);
-                        }
-
-                        direction = Direction.Up;
-                        return;
+                            direction = Direction.Left;
+                            break;
+                        case Direction.Left:
+                            list = new List<Vector2>
+                            {
+                                position + new Vector2(0, -1),
+                                position + new Vector2(1, -1),
+                                position + new Vector2(0, 1)
+                            };
+                            direction = Direction.Up;
+                            break;
                     }
                     break;
+
                 case Type.L:
-                    if (direction == Direction.Up)
+                    switch (direction)
                     {
-                        List<Vector2> list = new List<Vector2>
-                        {
-                            position + new Vector2(-1, 0),
-                            position + new Vector2(1, 0),
-                            position + new Vector2(-1, 1)
-                        };
+                        case Direction.Up:
+                            list = new List<Vector2>
+                            {
+                                position + new Vector2(-1, 0),
+                                position + new Vector2(1, 0),
+                                position + new Vector2(-1, 1)
+                            };
+                            direction = Direction.Right;
+                            break;
+                        case Direction.Right:
+                            list = new List<Vector2>
+                            {
+                                position + new Vector2(-1, -1),
+                                position + new Vector2(0, -1),
+                                position + new Vector2(0, 1)
+                            };
+                            direction = Direction.Down;
+                            break;
+                        case Direction.Down:
+                            list = new List<Vector2>
+                            {
+                                position + new Vector2(-1, 0),
+                                position + new Vector2(1, 0),
+                                position + new Vector2(1, -1)
+                            };
 
-                        list.ForEach(delegate (Vector2 pos) { if (scene.IsTaken(pos)) return; });
-
-                        for (int i = 1; i < 4; i++)
-                        {
-                            squares[i].MoveTo(list[i - 1]);
-                        }
-
-                        direction = Direction.Right;
-                        return;
-                    }
-                    if (direction == Direction.Right)
-                    {
-                        List<Vector2> list = new List<Vector2>
-                        {
-                            position + new Vector2(-1, -1),
-                            position + new Vector2(0, -1),
-                            position + new Vector2(0, 1)
-                        };
-
-                        list.ForEach(delegate (Vector2 pos) { if (scene.IsTaken(pos)) return; });
-
-                        for (int i = 1; i < 4; i++)
-                        {
-                            squares[i].MoveTo(list[i - 1]);
-                        }
-
-                        direction = Direction.Down;
-                        return;
-                    }
-                    if (direction == Direction.Down)
-                    {
-                        List<Vector2> list = new List<Vector2>
-                        {
-                            position + new Vector2(-1, 0),
-                            position + new Vector2(1, 0),
-                            position + new Vector2(1, -1)
-                        };
-
-                        list.ForEach(delegate (Vector2 pos) { if (scene.IsTaken(pos)) return; });
-
-                        for (int i = 1; i < 4; i++)
-                        {
-                            squares[i].MoveTo(list[i - 1]);
-                        }
-
-                        direction = Direction.Left;
-                        return;
-                    }
-                    if (direction == Direction.Left)
-                    {
-                        List<Vector2> list = new List<Vector2>
-                        {
-                            position + new Vector2(0, -1),
-                            position + new Vector2(1, 1),
-                            position + new Vector2(0, 1)
-                        };
-
-                        list.ForEach(delegate (Vector2 pos) { if (scene.IsTaken(pos)) return; });
-
-                        for (int i = 1; i < 4; i++)
-                        {
-                            squares[i].MoveTo(list[i - 1]);
-                        }
-
-                        direction = Direction.Up;
-                        return;
+                            direction = Direction.Left;
+                            break;
+                        case Direction.Left:
+                            list = new List<Vector2>
+                            {
+                                position + new Vector2(0, -1),
+                                position + new Vector2(1, 1),
+                                position + new Vector2(0, 1)
+                            };
+                            direction = Direction.Up;
+                            break;
                     }
                     break;
             }
+            
+            MoveToPos(list);
+            isTurning = false;
         }
         public bool Fall()
         {
