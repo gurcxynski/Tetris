@@ -9,7 +9,7 @@ namespace Tetris.Core
     {
         private readonly Piece.Type _type;
         private Vector2 _position;
-        
+        public bool toMoveWhenCleared = false;
         public Square(Piece.Type type, Vector2 position)
         {
             _position = position;

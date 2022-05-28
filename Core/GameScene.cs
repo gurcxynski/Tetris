@@ -37,8 +37,6 @@ namespace Tetris.Core
 
             fallingPiece = new Piece(Globals.startPos);
 
-            
-
             initialized = true;
 
         }
@@ -131,6 +129,11 @@ namespace Tetris.Core
                 if (item.GetPos().Y < 3) return false;
             }
 
+            fallingPiece.squares.ForEach(delegate (Square item)
+            {
+                item.toMoveWhenCleared = true;
+            });
+
             fallingPiece = Dequeue();
             changedCurrentPiece = false;
 
@@ -142,15 +145,8 @@ namespace Tetris.Core
 
                     squares.ForEach(delegate (Square item)
                     {
-                        if (item.GetPos().Y < i) item.Move(Piece.Direction.Down);
+                        if (item.GetPos().Y < i && item.toMoveWhenCleared) item.Move(Piece.Direction.Down);
                     });
-
-                    if (!(heldPiece is null)) heldPiece.MoveTo(Globals.holdPos);
-
-                    foreach (var piece in queue)
-                    {
-                        piece.Move(Piece.Direction.Up);
-                    }
                 }
             }
             return true;
