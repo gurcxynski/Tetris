@@ -28,12 +28,9 @@ namespace Tetris
         public static SpriteFont font;
         public static EasyKeyboard keyboard;
         public static EasyMouse mouse;
-        public static OptionsMenu optionsMenu;
-        public static StartMenu startMenu;
-        public static PauseMenu pauseMenu;
-        public static Song song;
 
-        public static bool ClickedMenuButton = false;
+        public static Dictionary<string, Menu> menus = new Dictionary<string, Menu>();
+        public static Song song;
 
     }
     public static class Settings
@@ -112,14 +109,13 @@ namespace Tetris
             Globals.buttonTextures[(6, false)] = Content.Load<Texture2D>("buttons/pause1");
             Globals.buttonTextures[(6, true)] = Content.Load<Texture2D>("buttons/pause2");
 
+            Globals.menus["start"] = new StartMenu();
+            Globals.menus["pause"] = new PauseMenu();
+            Globals.menus["options"] = new OptionsMenu();
 
+            Globals.menus["start"].Enable();
 
-            Globals.startMenu = new StartMenu();
-            Globals.pauseMenu = new PauseMenu();
-            Globals.optionsMenu = new OptionsMenu();
-            Globals.startMenu.Enable();
-
-            Globals.scene.pauseButton = new PauseButton(new Vector2(300, 50));
+            Globals.scene.pauseButton = new PauseButton(new Vector2(500, 0));
             Globals.scene.pauseButton.Enable();
 
 
@@ -133,18 +129,16 @@ namespace Tetris
             Globals.keyboard.Update();
             Globals.mouse.Update();
 
-            Globals.startMenu.Update();
-            Globals.pauseMenu.Update();
-            Globals.optionsMenu.Update();
-
+            foreach (var menu in Globals.menus.Values)
+            {
+                menu.Update();
+            }
 
             if (Globals.state == GameState.gameRunning && !Globals.scene.Update(gameTime))
             {
                 Globals.scene = new GameScene();
                 Globals.state = GameState.startMenu;
             }
-
-            if (Globals.ClickedMenuButton && Globals.mouse.IsReleased(MouseButtons.Left)) Globals.ClickedMenuButton = false;
 
             base.Update(gameTime);
         }
@@ -161,15 +155,15 @@ namespace Tetris
             {
                 case GameState.startMenu:
                     spriteBatch.Draw(m_back, new Vector2(0, 0), Color.White);
-                    Globals.startMenu.Draw(spriteBatch);
+                    Globals.menus["start"].Draw(spriteBatch);
                     break;
                 case GameState.pauseMenu:
                     spriteBatch.Draw(m_back, new Vector2(0, 0), Color.White);
-                    Globals.pauseMenu.Draw(spriteBatch);
+                    Globals.menus["pause"].Draw(spriteBatch);
                     break;
                 case GameState.optionsMenu:
                     spriteBatch.Draw(m_back, new Vector2(0, 0), Color.White);
-                    Globals.optionsMenu.Draw(spriteBatch);
+                    Globals.menus["options"].Draw(spriteBatch);
                     break;
                 case GameState.gameRunning:
                     spriteBatch.Draw(back, new Vector2(0, 0), Color.White);
@@ -178,7 +172,6 @@ namespace Tetris
             }
 
             spriteBatch.DrawString(Globals.font, Globals.state.ToString(), new Vector2(0, 0), Color.Black);
-            spriteBatch.DrawString(Globals.font, Globals.ClickedMenuButton.ToString(), new Vector2(0, 20), Color.Black);
             if(Globals.state == GameState.optionsMenu) spriteBatch.DrawString(Globals.font, MediaPlayer.Volume.ToString(), new Vector2(350, 375), Color.Black);
 
             spriteBatch.End();

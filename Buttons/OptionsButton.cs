@@ -13,8 +13,7 @@ namespace Tetris.Buttons
         protected override void Action()
         {
             Globals.state = GameState.optionsMenu;
-            Disable();
-            Globals.optionsMenu.Enable();
+            Globals.menus["options"].Enable();
         }
     }
 }

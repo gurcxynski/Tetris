@@ -13,8 +13,7 @@ namespace Tetris.Menus
         protected override void Action()
         {
             Globals.state = GameState.startMenu;
-            Disable();
-            Globals.startMenu.Enable();
+            Globals.menus["start"].Enable();
         }
     }
 }

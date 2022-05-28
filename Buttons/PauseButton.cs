@@ -12,8 +12,7 @@ namespace Tetris.Buttons
         protected override void Action()
         {
             Globals.state = GameState.pauseMenu;
-            Globals.pauseMenu.Enable();
-            Disable();
+            Globals.menus["pause"].Enable();
             Globals.scene.pauseButton.Disable();
         }
     }

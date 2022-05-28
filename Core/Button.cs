@@ -48,10 +48,9 @@ namespace Tetris.Core
         }
         protected void OnClick(MouseButtons button)
         {
-            if (hovered && enabled && button == MouseButtons.Left && !Globals.ClickedMenuButton)
+            if (hovered && enabled && button == MouseButtons.Left)
             {
                 Action();
-                Globals.ClickedMenuButton = true;
             }
         }
         protected abstract void Action();
