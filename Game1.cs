@@ -37,6 +37,7 @@ namespace Tetris
     public static class Settings
     {
         public static bool music = true;
+        public static int gravity;
     }
     public class Game1 : Game
     {

@@ -18,6 +18,8 @@ namespace Tetris.Core
 
         public PauseButton pauseButton;
 
+
+        int score = 0;
         double sinceMove = 0;
         bool initialized = false;
         bool changedCurrentPiece = false;
@@ -36,6 +38,8 @@ namespace Tetris.Core
             queue.Enqueue(new Piece(Globals.queueLastPos));
 
             fallingPiece = new Piece(Globals.startPos);
+
+            Settings.gravity = 1;
 
             initialized = true;
 
@@ -68,6 +72,11 @@ namespace Tetris.Core
             {
                 squares.Remove(item);
             }
+
+            squares.ForEach(delegate (Square item)
+            {
+                if (item.GetPos().Y < n && item.toMoveWhenCleared) item.Move(Piece.Direction.Down);
+            });
         }
         
         void Hold()
@@ -105,6 +114,7 @@ namespace Tetris.Core
                 case Keys.Down:
                     while (fallingPiece.Fall()) { };
                     TakeNewPiece();
+                    score += 2 * Settings.gravity;
                     break;
                 case Keys.Space:
                     fallingPiece.Turn();
@@ -136,31 +146,48 @@ namespace Tetris.Core
 
             fallingPiece = Dequeue();
             changedCurrentPiece = false;
+            int cleared = 0;
 
             for (int i = 0; i < Globals.maxY; i++)
             {
                 if (IsRowFull(i))
                 {
+                    cleared++;
                     ClearRow(i);
-
-                    squares.ForEach(delegate (Square item)
-                    {
-                        if (item.GetPos().Y < i && item.toMoveWhenCleared) item.Move(Piece.Direction.Down);
-                    });
                 }
             }
+
+            switch (cleared)
+            {
+                case 1:
+                    score += 100 * Settings.gravity;
+                    break;
+                case 2:
+                    score += 300 * Settings.gravity;
+                    break;
+                case 3:
+                    score += 500 * Settings.gravity;
+                    break;
+                case 4:
+                    score += 800 * Settings.gravity;
+                    break;
+            }
+
+            if (cleared > 0) Settings.gravity++;
+
             return true;
         }
         public bool Update(GameTime updateTime)
         {
             if (!initialized) Initialize();
 
-            if (updateTime.TotalGameTime.TotalMilliseconds - sinceMove > 150 && !pause && !fallingPiece.isTurning)
+            if (updateTime.TotalGameTime.TotalMilliseconds - sinceMove > 200 - Settings.gravity * 20 && !pause && !fallingPiece.isTurning)
             {
                 sinceMove = updateTime.TotalGameTime.TotalMilliseconds;
 
                 if (!fallingPiece.Fall())
                 {
+                    score += Settings.gravity;
                     if (!TakeNewPiece()) return false;
                 }
             }
@@ -180,9 +207,7 @@ namespace Tetris.Core
         {
             squares.ForEach(delegate (Square item) { item.Draw(spriteBatch); });
             pauseButton.Draw(spriteBatch);
-
-            spriteBatch.DrawString(Globals.font, "o", (fallingPiece.GetPosition() * 30) + new Vector2(22, 0), Color.White);
-
+            spriteBatch.DrawString(Globals.font, score.ToString(), new Vector2(0), Color.White);
         }
     }
 }
