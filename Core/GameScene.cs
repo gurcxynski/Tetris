@@ -184,6 +184,9 @@ namespace Tetris.Core
         {
             squares.ForEach(delegate (Square item) { item.Draw(spriteBatch); });
             pauseButton.Draw(spriteBatch);
+
+            spriteBatch.DrawString(Globals.font, "o", (fallingPiece.GetPosition() * 30) + new Vector2(22, 0), Color.White);
+
         }
     }
 }

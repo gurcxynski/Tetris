@@ -5,9 +5,9 @@ using Tetris.Core;
 
 namespace Tetris.Buttons
 {
-    internal class MusicVolumeButton : Button
+    internal class MusicDownButton : Button
     {
-        public MusicVolumeButton(Vector2 arg) : base(arg)
+        public MusicDownButton(Vector2 arg) : base(arg)
         {
             id = 5;
         }

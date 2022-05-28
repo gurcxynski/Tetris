@@ -133,42 +133,46 @@ namespace Tetris.Core
                     isTurning = false;
                     return;
                 case Type.T:
-                    if (direction == Direction.Up)
+                    switch (direction)
                     {
-                        if(squares[1].MoveTo(position + new Vector2(-1, 0)))
-                        {
+                        case Direction.Up:
+                            list = new List<Vector2>
+                            {
+                                position + new Vector2(1, 0),
+                                position + new Vector2(0, 1),
+                                position + new Vector2(-1, 0)
+                            };
                             direction = Direction.Right;
-                        }
-                        isTurning = false;
-                        return;
-                    }
-                    if (direction == Direction.Right)
-                    {
-                        if(squares[2].MoveTo(position + new Vector2(0, -1)))
-                        {
+                            break;
+                        case Direction.Right:
+                            list = new List<Vector2>
+                            {
+                                position + new Vector2(0, -1),
+                                position + new Vector2(0, 1),
+                                position + new Vector2(-1, 0)
+                            };
                             direction = Direction.Down;
-                        }
-                        isTurning = false;
-                        return;
-                    }
-                    if (direction == Direction.Down)
-                    {
-                        if (squares[3].MoveTo(position + new Vector2(1, 0)))
-                        {
+                            break;
+                        case Direction.Down:
+                            list = new List<Vector2>
+                            {
+                                position + new Vector2(0, -1),
+                                position + new Vector2(1, 0),
+                                position + new Vector2(-1, 0)
+                            };
                             direction = Direction.Left;
-                        }
-                        isTurning = false;
-                        return;
-                    }
-                    if (direction == Direction.Left)
-                    {
-                        if (squares[1].MoveTo(position + new Vector2(0, 1)))
-                        {
+                            break;
+                        case Direction.Left:
+                            list = new List<Vector2>
+                            {
+                                position + new Vector2(0, -1),
+                                position + new Vector2(1, 0),
+                                position + new Vector2(0, 1)
+                            };
                             direction = Direction.Up;
-                        }
-                        isTurning = false;
-                        return;
+                            break;
                     }
+                    break;
                     break;
                 case Type.I:
                     if (direction == Direction.Up)
@@ -265,8 +269,8 @@ namespace Tetris.Core
                         case Direction.Left:
                             list = new List<Vector2>
                             {
-                                position + new Vector2(-1, 0),
-                                position + new Vector2(0, 1),
+                                position + new Vector2(0, -1),
+                                position + new Vector2(1, 0),
                                 position + new Vector2(1, 1)
                             };
                             direction = Direction.Up;

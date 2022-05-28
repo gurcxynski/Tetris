@@ -7,7 +7,7 @@ namespace Tetris.Buttons
     {
         public PauseButton(Vector2 arg) : base(arg)
         {
-            id = 6;
+            id = 7;
         }
         protected override void Action()
         {
