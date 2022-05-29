@@ -19,7 +19,7 @@ namespace Tetris.Core
         }
         public void Draw(SpriteBatch spriteBatch)
         {
-             spriteBatch.Draw(texture, position, Color.White);
+            spriteBatch.Draw(texture, position, Color.White);
         }
         protected bool EnteredButton()
         {
@@ -32,7 +32,7 @@ namespace Tetris.Core
             }
             return false;
         }
-        public void Update()
+        public virtual void Update()
         {
             hovered = EnteredButton();
 

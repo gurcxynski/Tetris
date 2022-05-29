@@ -16,9 +16,6 @@ namespace Tetris.Core
         public Piece fallingPiece;
         Piece heldPiece;
 
-        public PauseButton pauseButton;
-
-
         int score = 0;
         double sinceMove = 0;
         bool initialized = false;
@@ -119,6 +116,10 @@ namespace Tetris.Core
                 case Keys.Space:
                     fallingPiece.Turn();
                     break;
+                case Keys.Escape:
+                    Globals.state = GameState.startMenu;
+                    Globals.menus["start"].Enable();
+                    break;
             }
         }
         Piece Dequeue()
@@ -191,7 +192,6 @@ namespace Tetris.Core
                     if (!TakeNewPiece()) return false;
                 }
             }
-            pauseButton.Update();
             return true;
         }
         public bool IsTaken(Vector2 pos)
@@ -206,7 +206,6 @@ namespace Tetris.Core
         public void Draw(SpriteBatch spriteBatch)
         {
             squares.ForEach(delegate (Square item) { item.Draw(spriteBatch); });
-            pauseButton.Draw(spriteBatch);
             spriteBatch.DrawString(Globals.font, score.ToString(), new Vector2(0), Color.White);
         }
     }

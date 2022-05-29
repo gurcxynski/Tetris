@@ -4,14 +4,13 @@ using Microsoft.Xna.Framework.Media;
 using System.Collections.Generic;
 using Tetris.Core;
 using MonoGame.EasyInput;
-using Microsoft.Xna.Framework.Input;
 using Tetris.Menus;
 using Tetris.Buttons;
 using System;
 
 namespace Tetris
 {
-    public enum GameState { startMenu, pauseMenu, gameRunning, optionsMenu }
+    public enum GameState { startMenu, gameRunning, optionsMenu }
     public static class Globals
     {
         public static Dictionary<Piece.Type, Texture2D> blockTextures;
@@ -24,7 +23,7 @@ namespace Tetris
         public static Vector2 queueLastPos = new Vector2(15, 4);
         public static Vector2 startPos = new Vector2(7, 1);
 
-        public static GameState state = GameState.startMenu;
+        public static GameState state;
 
         public static SpriteFont font;
         public static EasyKeyboard keyboard;
@@ -55,6 +54,7 @@ namespace Tetris
 
             Globals.keyboard = new EasyKeyboard();
             Globals.mouse = new EasyMouse();
+
             Globals.scene = new GameScene();
             Globals.buttonTextures = new Dictionary<(int, bool), Texture2D>();
 
@@ -114,14 +114,15 @@ namespace Tetris
             Globals.buttonTextures[(7, false)] = Content.Load<Texture2D>("buttons/pause1");
             Globals.buttonTextures[(7, true)] = Content.Load<Texture2D>("buttons/pause2");
 
+            Globals.buttonTextures[(8, false)] = Content.Load<Texture2D>("buttons/round");
+
+            Globals.buttonTextures[(9, false)] = Content.Load<Texture2D>("buttons/line");
+
             Globals.menus["start"] = new StartMenu();
-            Globals.menus["pause"] = new PauseMenu();
             Globals.menus["options"] = new OptionsMenu();
 
             Globals.menus["start"].Enable();
-
-            Globals.scene.pauseButton = new PauseButton(new Vector2(500, 0));
-            Globals.scene.pauseButton.Enable();
+            Globals.state = GameState.startMenu;
 
             Globals.song = Content.Load<Song>("tetris");
             MediaPlayer.Play(Globals.song);
@@ -142,6 +143,7 @@ namespace Tetris
             {
                 Globals.scene = new GameScene();
                 Globals.state = GameState.startMenu;
+                Globals.menus["start"].Enable();
             }
 
             base.Update(gameTime);
@@ -159,10 +161,6 @@ namespace Tetris
                     spriteBatch.Draw(m_back, new Vector2(0, 0), Color.White);
                     Globals.menus["start"].Draw(spriteBatch);
                     break;
-                case GameState.pauseMenu:
-                    spriteBatch.Draw(m_back, new Vector2(0, 0), Color.White);
-                    Globals.menus["pause"].Draw(spriteBatch);
-                    break;
                 case GameState.optionsMenu:
                     spriteBatch.Draw(m_back, new Vector2(0, 0), Color.White);
                     Globals.menus["options"].Draw(spriteBatch);
@@ -174,7 +172,7 @@ namespace Tetris
             }
 
             //spriteBatch.DrawString(Globals.font, Globals.state.ToString(), new Vector2(0, 0), Color.Black);
-            if(Globals.state == GameState.optionsMenu) spriteBatch.DrawString(Globals.font, (100*Math.Round(MediaPlayer.Volume, 1)).ToString() + "%", new Vector2(250, 360), Color.Black);
+            //if(Globals.state == GameState.optionsMenu) spriteBatch.DrawString(Globals.font, (100*Math.Round(MediaPlayer.Volume, 1)).ToString() + "%", new Vector2(250, 360), Color.Black);
 
             spriteBatch.End();
 
