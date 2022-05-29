@@ -112,7 +112,7 @@ namespace MonoGame.EasyInput
             // store previous state and get new state
             _prevState = _newState;
             _newState = Keyboard.GetState();
-            
+
             // generate events
             if (OnKeyReleased != null || OnKeyPressed != null)
             {

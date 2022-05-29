@@ -13,7 +13,7 @@ namespace Tetris.Buttons
         }
         protected override void Action()
         {
-            
+
         }
         public override void Update()
         {

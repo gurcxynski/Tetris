@@ -26,7 +26,7 @@ namespace MonoGame.EasyInput
         /// <summary>
         /// Right mouse button.
         /// </summary>
-        Right, 
+        Right,
 
         /// <summary>
         /// X1 button.

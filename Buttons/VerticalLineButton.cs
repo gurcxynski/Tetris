@@ -13,7 +13,7 @@ namespace Tetris.Buttons
         }
         protected override void Action()
         {
-            MediaPlayer.Volume = (Globals.mouse.Position.X - 200)/120f;
+            MediaPlayer.Volume = (Globals.mouse.Position.X - 200) / 120f;
         }
         public override void Update()
         {

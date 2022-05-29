@@ -24,12 +24,12 @@ namespace Tetris.Core
         }
         public void Enable()
         {
-            foreach (var item in Globals.menus.Values)
+            foreach (Menu item in Globals.menus.Values)
             {
                 item.Disable();
             }
             buttons.ForEach(delegate (Button btn) { btn.Enable(); });
-            
+
         }
         public void Disable()
         {

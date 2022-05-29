@@ -1,8 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace Tetris.Core
 {
@@ -73,17 +71,17 @@ namespace Tetris.Core
         }
         public void MoveTo(Vector2 pos)
         {
-            foreach (var item in squares)
+            foreach (Square item in squares)
             {
                 Vector2 relative = item.GetPos() - position;
                 item.ForceMoveTo(pos + relative);
             }
             position = pos;
         }
-        
+
         public bool Move(Direction direction)
         {
-            foreach (var item in squares)
+            foreach (Square item in squares)
             {
                 if (!item.CheckMove(direction)) return false;
             }
@@ -115,11 +113,11 @@ namespace Tetris.Core
         {
             bool taken = false;
             arg.ForEach(delegate (Vector2 pos) { if (Globals.scene.IsTaken(pos)) taken = true; });
-            if(taken) return false;
+            if (taken) return false;
             for (int i = 1; i < 4; i++)
-                {
-                    squares[i].MoveTo(arg[i - 1]);
-                }
+            {
+                squares[i].MoveTo(arg[i - 1]);
+            }
             return true;
         }
         public void Turn()
@@ -404,18 +402,18 @@ namespace Tetris.Core
                     }
                     break;
             }
-            
+
             MoveToPos(list);
             isTurning = false;
         }
         public bool Fall()
         {
-            foreach (var item in squares)
+            foreach (Square item in squares)
             {
                 if (!item.CheckMove(Direction.Down)) return false;
             }
 
-            squares.ForEach(delegate (Square square) { square.Move(Direction.Down);});
+            squares.ForEach(delegate (Square square) { square.Move(Direction.Down); });
 
             position += new Vector2(0, 1);
             return true;

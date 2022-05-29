@@ -13,7 +13,7 @@ namespace Tetris.Core
         protected bool enabled = false;
         protected Button(Vector2 arg)
         {
-            Globals.mouse.OnMouseButtonPressed += OnClick; 
+            Globals.mouse.OnMouseButtonPressed += OnClick;
             texture = Globals.buttonTextures[(id, false)];
             position = arg;
         }

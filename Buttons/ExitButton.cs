@@ -3,7 +3,7 @@ using Tetris.Core;
 
 namespace Tetris.Buttons
 {
-    public class ExitButton: Button
+    public class ExitButton : Button
     {
         public ExitButton(Vector2 arg) : base(arg)
         {

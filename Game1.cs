@@ -1,12 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
+using MonoGame.EasyInput;
 using System.Collections.Generic;
 using Tetris.Core;
-using MonoGame.EasyInput;
 using Tetris.Menus;
-using Tetris.Buttons;
-using System;
 
 namespace Tetris
 {
@@ -41,8 +39,7 @@ namespace Tetris
     public class Game1 : Game
     {
         public static Game1 self;
-
-        GraphicsDeviceManager graphics;
+        readonly GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Texture2D back;
         Texture2D m_back;
@@ -92,13 +89,13 @@ namespace Tetris
 
             Globals.buttonTextures[(0, false)] = Content.Load<Texture2D>("buttons/buttonnew1");
             Globals.buttonTextures[(0, true)] = Content.Load<Texture2D>("buttons/buttonnew2");
-            
+
             Globals.buttonTextures[(1, false)] = Content.Load<Texture2D>("buttons/option1");
             Globals.buttonTextures[(1, true)] = Content.Load<Texture2D>("buttons/option2");
-            
+
             Globals.buttonTextures[(2, false)] = Content.Load<Texture2D>("buttons/music1");
             Globals.buttonTextures[(2, true)] = Content.Load<Texture2D>("buttons/music2");
-            
+
             Globals.buttonTextures[(3, false)] = Content.Load<Texture2D>("buttons/return1");
             Globals.buttonTextures[(3, true)] = Content.Load<Texture2D>("buttons/return2");
 
@@ -134,7 +131,7 @@ namespace Tetris
             Globals.mouse.Update();
 
 
-            foreach (var menu in Globals.menus.Values)
+            foreach (Menu menu in Globals.menus.Values)
             {
                 menu.Update();
             }

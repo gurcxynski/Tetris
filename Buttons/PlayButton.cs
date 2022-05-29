@@ -12,11 +12,11 @@ namespace Tetris.Buttons
         protected override void Action()
         {
             Globals.state = GameState.gameRunning;
-            foreach (var item in Globals.menus.Values)
+            foreach (Menu item in Globals.menus.Values)
             {
                 item.Disable();
             }
-           //Globals.scene.pauseButton.Enable();
+            //Globals.scene.pauseButton.Enable();
         }
     }
 }

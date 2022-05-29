@@ -1,5 +1,4 @@
 using Microsoft.Xna.Framework;
-using MonoGame.EasyInput;
 using Tetris.Core;
 
 namespace Tetris.Menus

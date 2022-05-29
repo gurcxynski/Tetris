@@ -1,9 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
 using System.Collections.Generic;
-using Tetris.Buttons;
 
 namespace Tetris.Core
 {
@@ -48,24 +46,24 @@ namespace Tetris.Core
         bool IsRowFull(int n)
         {
             List<float> present = new List<float>();
-            foreach (var item in squares)
+            foreach (Square item in squares)
             {
                 if (item.GetPos().Y == n) present.Add(item.GetPos().X);
             }
             for (int i = 0; i < Globals.maxX; i++)
             {
-                if(!present.Contains(i)) return false;
+                if (!present.Contains(i)) return false;
             }
             return true;
         }
         void ClearRow(int n)
         {
             List<Square> marked = new List<Square>();
-            foreach (var item in squares)
+            foreach (Square item in squares)
             {
                 if (item.GetPos().Y == n) marked.Add(item);
             }
-            foreach (var item in marked)
+            foreach (Square item in marked)
             {
                 squares.Remove(item);
             }
@@ -75,7 +73,7 @@ namespace Tetris.Core
                 if (item.GetPos().Y < n && item.toMoveWhenCleared) item.Move(Piece.Direction.Down);
             });
         }
-        
+
         void Hold()
         {
             if (changedCurrentPiece) return;
@@ -126,7 +124,7 @@ namespace Tetris.Core
         {
             Piece dequeued = queue.Dequeue();
             dequeued.MoveTo(Globals.startPos);
-            foreach (var item in queue)
+            foreach (Piece item in queue)
             {
                 item.Move(Piece.Direction.Down, 4);
             }
@@ -135,7 +133,7 @@ namespace Tetris.Core
         }
         bool TakeNewPiece()
         {
-            foreach (var item in squares)
+            foreach (Square item in squares)
             {
                 if (item.GetPos().Y < 3) return false;
             }
@@ -197,7 +195,7 @@ namespace Tetris.Core
         public bool IsTaken(Vector2 pos)
         {
             if (pos.X < 0 || pos.X >= Globals.maxX || pos.Y >= Globals.maxY) return true;
-            foreach (var item in squares)
+            foreach (Square item in squares)
             {
                 if (item.GetPos() == pos && !fallingPiece.squares.Contains(item)) return true;
             }

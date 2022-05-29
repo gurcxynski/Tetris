@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace Tetris.Core
 {
@@ -25,7 +24,7 @@ namespace Tetris.Core
                 _ => false,
             };
         }
-        
+
         public bool MoveTo(Vector2 pos)
         {
             if (Globals.scene.IsTaken(_position)) return false;
