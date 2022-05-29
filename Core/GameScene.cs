@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Tetris.Core
 {
@@ -187,7 +188,18 @@ namespace Tetris.Core
                 if (!fallingPiece.Fall())
                 {
                     score += Settings.gravity;
-                    if (!TakeNewPiece()) return false;
+                    if (!TakeNewPiece())
+                    {
+                        int max_score = 0;
+                        if (File.ReadAllText("score.txt") != "") max_score = int.Parse(File.ReadAllText("score.txt"));
+                        if (score > max_score)
+                        {
+                            using StreamWriter writer = new StreamWriter("score.txt");
+                            writer.Flush();
+                            writer.WriteLine(score);
+                        }
+                        return false;
+                    }
                 }
             }
             return true;

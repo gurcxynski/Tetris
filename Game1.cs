@@ -124,6 +124,7 @@ namespace Tetris
             Globals.song = Content.Load<Song>("tetris");
             MediaPlayer.Play(Globals.song);
             MediaPlayer.IsRepeating = true;
+            MediaPlayer.Volume = 0.5f;
         }
         protected override void Update(GameTime gameTime)
         {
