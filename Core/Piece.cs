@@ -171,7 +171,6 @@ namespace Tetris.Core
                             break;
                     }
                     break;
-                    break;
                 case Type.I:
                     if (direction == Direction.Up)
                     {

@@ -62,7 +62,7 @@ namespace Tetris.Core
             List<Square> marked = new List<Square>();
             foreach (Square item in squares)
             {
-                if (item.GetPos().Y == n) marked.Add(item);
+                if (item.GetPos().Y == n && item.toMoveWhenCleared) marked.Add(item);
             }
             foreach (Square item in marked)
             {
