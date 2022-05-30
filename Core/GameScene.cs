@@ -37,6 +37,9 @@ namespace Tetris.Core
 
             Settings.gravity = 1;
 
+
+            File.Create("score.txt").Dispose();
+
             initialized = true;
 
         }
@@ -110,6 +113,7 @@ namespace Tetris.Core
                 case Keys.Down:
                     while (fallingPiece.Fall()) { };
                     TakeNewPiece();
+                    sinceMove = 0;
                     score += 2 * Settings.gravity;
                     break;
                 case Keys.Space:
@@ -136,7 +140,11 @@ namespace Tetris.Core
         {
             foreach (Square item in squares)
             {
-                if (item.GetPos().Y < 3) return false;
+                if (item.GetPos().Y < 3) 
+                {
+                    Globals.keyboard.OnKeyReleased -= HandleInput;
+                    return false;
+                }
             }
 
             fallingPiece.squares.ForEach(delegate (Square item)
@@ -191,7 +199,7 @@ namespace Tetris.Core
                     if (!TakeNewPiece())
                     {
                         int max_score = 0;
-                        if (File.ReadAllText("score.txt") != "") max_score = int.Parse(File.ReadAllText("score.txt"));
+                        int.TryParse(File.ReadAllText("score.txt"), out max_score);
                         if (score > max_score)
                         {
                             using StreamWriter writer = new StreamWriter("score.txt");
