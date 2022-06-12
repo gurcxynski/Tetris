@@ -8,18 +8,18 @@ namespace Tetris.Core
 {
     public class GameScene
     {
-
+        Piece fallingPiece;
+        Piece heldPiece;
         readonly List<Square> squares;
         readonly Queue<Piece> queue;
 
-        public Piece fallingPiece;
-        Piece heldPiece;
 
         int score = 0;
         double sinceMove = 0;
         bool initialized = false;
         bool changedCurrentPiece = false;
         bool pause = false;
+
 
         public GameScene()
         {
@@ -40,16 +40,13 @@ namespace Tetris.Core
             initialized = true;
 
         }
-        public void Add(Square arg)
-        {
-            squares.Add(arg);
-        }
+        public void Add(Square arg) => squares.Add(arg);
         bool IsRowFull(int n)
         {
             List<float> present = new List<float>();
             foreach (Square item in squares)
             {
-                if (item.GetPos().Y == n) present.Add(item.GetPos().X);
+                if (item.Position.Y == n) present.Add(item.Position.X);
             }
             for (int i = 0; i < Globals.maxX; i++)
             {
@@ -62,7 +59,7 @@ namespace Tetris.Core
             List<Square> marked = new List<Square>();
             foreach (Square item in squares)
             {
-                if (item.GetPos().Y == n) marked.Add(item);
+                if (item.Position.Y == n) marked.Add(item);
             }
             foreach (Square item in marked)
             {
@@ -71,7 +68,7 @@ namespace Tetris.Core
 
             squares.ForEach(delegate (Square item)
             {
-                if (item.GetPos().Y < n && item.toMoveWhenCleared) item.Move(Piece.Direction.Down);
+                if (item.Position.Y < n && item.toMoveWhenCleared) item.Move(Direction.Down, 1, true);
             });
         }
 
@@ -83,9 +80,9 @@ namespace Tetris.Core
             {
                 heldPiece = Dequeue();
             }
-
-            heldPiece.MoveTo(Globals.startPos);
-            fallingPiece.MoveTo(Globals.holdPos);
+            
+            heldPiece.Move(Globals.startPos, true);
+            fallingPiece.Move(Globals.holdPos, true);
 
             (fallingPiece, heldPiece) = (heldPiece, fallingPiece);
 
@@ -95,14 +92,14 @@ namespace Tetris.Core
         {
             if (Globals.state != GameState.gameRunning) return;
             if (button == Keys.P) pause = !pause;
-            //if (pause) return;
+            if (pause) return;
             switch (button)
             {
                 case Keys.Left:
-                    fallingPiece.Move(Piece.Direction.Left);
+                    fallingPiece.Move(Direction.Left);
                     break;
                 case Keys.Right:
-                    fallingPiece.Move(Piece.Direction.Right);
+                    fallingPiece.Move(Direction.Right);
                     break;
                 case Keys.Up:
                     Hold();
@@ -124,10 +121,10 @@ namespace Tetris.Core
         Piece Dequeue()
         {
             Piece dequeued = queue.Dequeue();
-            dequeued.MoveTo(Globals.startPos);
+            dequeued.Move(Globals.startPos, true);
             foreach (Piece item in queue)
             {
-                item.Move(Piece.Direction.Down, 4);
+                item.Move(Direction.Down, 4, true);
             }
             queue.Enqueue(new Piece(Globals.queueLastPos));
             return dequeued;
@@ -136,7 +133,7 @@ namespace Tetris.Core
         {
             foreach (Square item in squares)
             {
-                if (item.GetPos().Y < 3) return false;
+                if (item.Position.Y < 3) return false;
             }
 
             fallingPiece.squares.ForEach(delegate (Square item)
@@ -209,14 +206,10 @@ namespace Tetris.Core
             if (pos.X < 0 || pos.X >= Globals.maxX || pos.Y >= Globals.maxY) return true;
             foreach (Square item in squares)
             {
-                if (item.GetPos() == pos && !fallingPiece.squares.Contains(item)) return true;
+                if (item.Position == pos && !fallingPiece.squares.Contains(item)) return true;
             }
             return false;
         }
-        public void Draw(SpriteBatch spriteBatch)
-        {
-            squares.ForEach(delegate (Square item) { item.Draw(spriteBatch); });
-            spriteBatch.DrawString(Globals.font, score.ToString(), new Vector2(0), Color.White);
-        }
+        public void Draw(SpriteBatch spriteBatch) => squares.ForEach(delegate (Square item) { item.Draw(spriteBatch); });
     }
 }

@@ -6,60 +6,48 @@ namespace Tetris.Core
 
     public class Square
     {
-        private readonly Piece.Type _type;
-        private Vector2 _position;
-        public bool toMoveWhenCleared = false;
-        public Square(Piece.Type type, Vector2 position)
-        {
-            _position = position;
-            _type = type;
-        }
-        public bool CheckMove(Piece.Direction direction)
-        {
-            return direction switch
-            {
-                Piece.Direction.Left => _position.X > 0 && !Globals.scene.IsTaken(_position + new Vector2(-1, 0)),
-                Piece.Direction.Right => _position.X < Globals.maxX - 1 && !Globals.scene.IsTaken(_position + new Vector2(1, 0)),
-                Piece.Direction.Down => _position.Y < Globals.maxY - 1 && !Globals.scene.IsTaken(_position + new Vector2(0, 1)),
-                _ => false,
-            };
-        }
+        public PieceType Type { get; }
+        public Vector2 Position { get; set; }
 
-        public bool MoveTo(Vector2 pos)
+        public bool toMoveWhenCleared = false;
+        
+        public Square(PieceType type, Vector2 position)
         {
-            if (Globals.scene.IsTaken(_position)) return false;
-            _position = pos;
+            Type = type;
+            Position = position;
+        }
+        public bool CheckMove(Direction direction, float amount = 1)
+        {
+            Vector2 newPos = Position + direction switch
+            {
+                Direction.Left => new Vector2(-amount, 0),
+                Direction.Right => new Vector2(amount, 0),
+                Direction.Down => new Vector2(0, amount),
+                Direction.Up => new Vector2(0, -amount),
+                _ => new Vector2(0)
+            };
+
+            return !Globals.scene.IsTaken(newPos);
+        }
+        public bool Move(Vector2 pos, bool force = false)
+        {
+            if (Globals.scene.IsTaken(Position) && !force) return false;
+            Position = pos;
             return true;
         }
-        public void ForceMoveTo(Vector2 pos)
+        
+        public void Move(Direction direction, float amount = 1, bool force = false)
         {
-            _position = pos;
-        }
-        public void Move(Piece.Direction direction, float amount = 1)
-        {
-            switch (direction)
+            Vector2 newPos = Position + direction switch
             {
-                case Piece.Direction.Left:
-                    _position += new Vector2(-amount, 0);
-                    break;
-                case Piece.Direction.Right:
-                    _position += new Vector2(amount, 0);
-                    break;
-                case Piece.Direction.Up:
-                    _position += new Vector2(0, -amount);
-                    break;
-                case Piece.Direction.Down:
-                    _position += new Vector2(0, amount);
-                    break;
-            }
+                Direction.Left => new Vector2(-amount, 0),
+                Direction.Right => new Vector2(amount, 0),
+                Direction.Down => new Vector2(0, amount),
+                Direction.Up => new Vector2(0, -amount),
+            };
+            
+            Move(newPos, force);
         }
-        public Vector2 GetPos()
-        {
-            return _position;
-        }
-        public void Draw(SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(Globals.blockTextures[_type], (_position * 30) + new Vector2(22, 0), Color.White);
-        }
+        public void Draw(SpriteBatch spriteBatch) => spriteBatch.Draw(Globals.blockTextures[Type], (Position * 30) + new Vector2(22, 0), Color.White);
     }
 }

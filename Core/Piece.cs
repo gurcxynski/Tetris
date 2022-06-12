@@ -1,15 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using Tetris;
 
 namespace Tetris.Core
 {
     public class Piece
     {
-        public enum Type { O, I, S, Z, L, J, T }
-        public enum Direction { Up, Right, Down, Left }
+        
         public List<Square> squares;
-        readonly Type type;
+        readonly PieceType type;
         Direction direction;
         Vector2 position;
         readonly Random rnd;
@@ -21,7 +21,7 @@ namespace Tetris.Core
             rnd = new Random();
 
             direction = Direction.Up;
-            type = (Type)rnd.Next(0, 7);
+            type = (PieceType)rnd.Next(0, 7);
             position = startPos;
 
             squares.Add(new Square(type, startPos));
@@ -32,81 +32,75 @@ namespace Tetris.Core
         {
             switch (type)
             {
-                case Type.O:
+                case PieceType.O:
                     squares.Add(new Square(type, position + new Vector2(1, 0)));
                     squares.Add(new Square(type, position + new Vector2(1, 1)));
                     squares.Add(new Square(type, position + new Vector2(0, 1)));
                     break;
-                case Type.I:
+                case PieceType.I:
                     squares.Add(new Square(type, position + new Vector2(0, -1)));
                     squares.Add(new Square(type, position + new Vector2(0, 1)));
                     squares.Add(new Square(type, position + new Vector2(0, 2)));
                     break;
-                case Type.S:
+                case PieceType.S:
                     squares.Add(new Square(type, position + new Vector2(0, -1)));
                     squares.Add(new Square(type, position + new Vector2(1, 0)));
                     squares.Add(new Square(type, position + new Vector2(1, 1)));
                     break;
-                case Type.Z:
+                case PieceType.Z:
                     squares.Add(new Square(type, position + new Vector2(1, -1)));
                     squares.Add(new Square(type, position + new Vector2(0, 1)));
                     squares.Add(new Square(type, position + new Vector2(1, 0)));
                     break;
-                case Type.J:
+                case PieceType.J:
                     squares.Add(new Square(type, position + new Vector2(0, -1)));
                     squares.Add(new Square(type, position + new Vector2(1, -1)));
                     squares.Add(new Square(type, position + new Vector2(0, 1)));
                     break;
-                case Type.L:
+                case PieceType.L:
                     squares.Add(new Square(type, position + new Vector2(0, -1)));
                     squares.Add(new Square(type, position + new Vector2(0, 1)));
                     squares.Add(new Square(type, position + new Vector2(1, 1)));
                     break;
-                case Type.T:
+                case PieceType.T:
                     squares.Add(new Square(type, position + new Vector2(0, -1)));
                     squares.Add(new Square(type, position + new Vector2(1, 0)));
                     squares.Add(new Square(type, position + new Vector2(0, 1)));
                     break;
             }
         }
-        public void MoveTo(Vector2 pos)
+        public bool Move(Vector2 pos, bool force = false)
         {
             foreach (Square item in squares)
             {
-                Vector2 relative = item.GetPos() - position;
-                item.ForceMoveTo(pos + relative);
+                Vector2 relative = item.Position - position;
+                if (Globals.scene.IsTaken(pos + relative) && !force) return false;
+                item.Move(pos + relative, true);
             }
             position = pos;
-        }
-
-        public bool Move(Direction direction)
-        {
-            foreach (Square item in squares)
-            {
-                if (!item.CheckMove(direction)) return false;
-            }
-
-            squares.ForEach(delegate (Square square) { square.Move(direction); });
-
-            position += direction switch
-            {
-                Direction.Left => new Vector2(-1, 0),
-                Direction.Right => new Vector2(1, 0),
-                Direction.Down => new Vector2(0, 1),
-                _ => new Vector2(0, 0)
-            };
             return true;
         }
-        public bool Move(Direction direction, float amount)
+        
+        public bool Move(Direction direction, float amount = 1, bool force = false)
         {
-            squares.ForEach(delegate (Square square) { square.Move(direction, amount); });
-            position += direction switch
+            Vector2 change = direction switch
             {
                 Direction.Left => new Vector2(-amount, 0),
                 Direction.Right => new Vector2(amount, 0),
                 Direction.Down => new Vector2(0, amount),
-                _ => new Vector2(0, 0)
+                Direction.Up => new Vector2(0, -amount),
+                _ => new Vector2(0)
             };
+            
+            foreach (Square item in squares)
+            {
+                if (Globals.scene.IsTaken(item.Position + change) && !force) return false;
+            }
+            
+            squares.ForEach(delegate (Square square) { square.Move(square.Position + change, force); });
+
+            position += change;
+            
             return true;
         }
         bool MoveToPos(List<Vector2> arg)
@@ -116,7 +110,7 @@ namespace Tetris.Core
             if (taken) return false;
             for (int i = 1; i < 4; i++)
             {
-                squares[i].MoveTo(arg[i - 1]);
+                squares[i].Move(arg[i - 1]);
             }
             return true;
         }
@@ -127,10 +121,10 @@ namespace Tetris.Core
             List<Vector2> list = new List<Vector2>();
             switch (type)
             {
-                case Type.O:
+                case PieceType.O:
                     isTurning = false;
                     return;
-                case Type.T:
+                case PieceType.T:
                     switch (direction)
                     {
                         case Direction.Up:
@@ -171,8 +165,7 @@ namespace Tetris.Core
                             break;
                     }
                     break;
-                    break;
-                case Type.I:
+                case PieceType.I:
                     if (direction == Direction.Up)
                     {
                         for (int i = 0; i < 4; i++)
@@ -181,7 +174,7 @@ namespace Tetris.Core
                         }
                         for (int i = 0; i < 4; i++)
                         {
-                            squares[i].MoveTo(new Vector2(position.X - 2 + i, position.Y + 1));
+                            squares[i].Move(new Vector2(position.X - 2 + i, position.Y + 1));
                         }
                         position += new Vector2(0, 1);
                         direction = Direction.Right;
@@ -196,7 +189,7 @@ namespace Tetris.Core
                         }
                         for (int i = 0; i < 4; i++)
                         {
-                            squares[i].MoveTo(new Vector2(position.X - 1, position.Y - 2 + i));
+                            squares[i].Move(new Vector2(position.X - 1, position.Y - 2 + i));
                         }
                         position += new Vector2(-1, 0);
                         direction = Direction.Down;
@@ -211,7 +204,7 @@ namespace Tetris.Core
                         }
                         for (int i = 0; i < 4; i++)
                         {
-                            squares[i].MoveTo(new Vector2(position.X - 1 + i, position.Y - 1));
+                            squares[i].Move(new Vector2(position.X - 1 + i, position.Y - 1));
                         }
                         position += new Vector2(0, -1);
                         direction = Direction.Left;
@@ -226,7 +219,7 @@ namespace Tetris.Core
                         }
                         for (int i = 0; i < 4; i++)
                         {
-                            squares[i].MoveTo(new Vector2(position.X + 1, position.Y - 1 + i));
+                            squares[i].Move(new Vector2(position.X + 1, position.Y - 1 + i));
                         }
                         position += new Vector2(1, 0);
                         direction = Direction.Up;
@@ -234,7 +227,7 @@ namespace Tetris.Core
                         return;
                     }
                     break;
-                case Type.S:
+                case PieceType.S:
                     switch (direction)
                     {
                         case Direction.Up:
@@ -275,7 +268,7 @@ namespace Tetris.Core
                             break;
                     }
                     break;
-                case Type.Z:
+                case PieceType.Z:
                     switch (direction)
                     {
                         case Direction.Up:
@@ -316,7 +309,7 @@ namespace Tetris.Core
                             break;
                     }
                     break;
-                case Type.J:
+                case PieceType.J:
                     switch (direction)
                     {
                         case Direction.Up:
@@ -359,7 +352,7 @@ namespace Tetris.Core
                     }
                     break;
 
-                case Type.L:
+                case PieceType.L:
                     switch (direction)
                     {
                         case Direction.Up:
@@ -418,7 +411,7 @@ namespace Tetris.Core
             position += new Vector2(0, 1);
             return true;
         }
-        public new Type GetType()
+        public new PieceType GetType()
         {
             return type;
         }

@@ -9,9 +9,12 @@ using Tetris.Menus;
 namespace Tetris
 {
     public enum GameState { startMenu, gameRunning, optionsMenu }
+    public enum PieceType { O, I, S, Z, L, J, T }
+    public enum Direction { Up, Right, Down, Left }
+    
     public static class Globals
     {
-        public static Dictionary<Piece.Type, Texture2D> blockTextures;
+        public static Dictionary<PieceType, Texture2D> blockTextures;
         public static Dictionary<(int, bool), Texture2D> buttonTextures;
 
         public static GameScene scene;
@@ -76,15 +79,15 @@ namespace Tetris
             back = Content.Load<Texture2D>("Bck");
             m_back = Content.Load<Texture2D>("back");
 
-            Globals.blockTextures = new Dictionary<Piece.Type, Texture2D>
+            Globals.blockTextures = new Dictionary<PieceType, Texture2D>
             {
-                [Piece.Type.Z] = Content.Load<Texture2D>("blocks/red"),
-                [Piece.Type.I] = Content.Load<Texture2D>("blocks/blue"),
-                [Piece.Type.S] = Content.Load<Texture2D>("blocks/green"),
-                [Piece.Type.O] = Content.Load<Texture2D>("blocks/yellow"),
-                [Piece.Type.J] = Content.Load<Texture2D>("blocks/pink"),
-                [Piece.Type.T] = Content.Load<Texture2D>("blocks/purple"),
-                [Piece.Type.L] = Content.Load<Texture2D>("blocks/orange")
+                [PieceType.Z] = Content.Load<Texture2D>("blocks/red"),
+                [PieceType.I] = Content.Load<Texture2D>("blocks/blue"),
+                [PieceType.S] = Content.Load<Texture2D>("blocks/green"),
+                [PieceType.O] = Content.Load<Texture2D>("blocks/yellow"),
+                [PieceType.J] = Content.Load<Texture2D>("blocks/pink"),
+                [PieceType.T] = Content.Load<Texture2D>("blocks/purple"),
+                [PieceType.L] = Content.Load<Texture2D>("blocks/orange")
             };
 
             Globals.buttonTextures[(0, false)] = Content.Load<Texture2D>("buttons/buttonnew1");

@@ -4,7 +4,7 @@ using Tetris.Core;
 
 namespace Tetris.Buttons
 {
-    internal class VerticalLineButton : Button
+    class VerticalLineButton : Button
     {
         public VerticalLineButton(Vector2 arg) : base(arg)
         {

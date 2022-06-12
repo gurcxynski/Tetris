@@ -4,12 +4,9 @@ using Tetris.Core;
 
 namespace Tetris.Buttons
 {
-    public class EnableMusicButton : Button
+    class EnableMusicButton : Button
     {
-        public EnableMusicButton(Vector2 arg) : base(arg)
-        {
-            id = 2;
-        }
+        public EnableMusicButton(Vector2 arg) : base(arg) => id = 2;
         protected override void Action()
         {
             if (Settings.music)

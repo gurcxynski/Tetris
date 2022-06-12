@@ -4,15 +4,9 @@ using Tetris.Core;
 
 namespace Tetris.Buttons
 {
-    internal class MusicUpButton : Button
+    class MusicUpButton : Button
     {
-        public MusicUpButton(Vector2 arg) : base(arg)
-        {
-            id = 6;
-        }
-        protected override void Action()
-        {
-            MediaPlayer.Volume += 0.2f;
-        }
+        public MusicUpButton(Vector2 arg) : base(arg) => id = 6;
+        protected override void Action() => MediaPlayer.Volume += 0.2f;
     }
 }
