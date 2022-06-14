@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Tetris.Core
 {
@@ -46,29 +47,16 @@ namespace Tetris.Core
         public void Add(Square arg) => squares.Add(arg);
         bool IsRowFull(int n)
         {
-            List<float> present = new List<float>();
-            foreach (Square item in squares)
-            {
-                if (item.Position.Y == n) present.Add(item.Position.X);
-            }
-            for (int i = 0; i < Globals.maxX; i++)
-            {
-                if (!present.Contains(i)) return false;
-            }
-            return true;
+            var row =  from point in squares
+                       where point.Position.Y == n && Globals.maxX > point.Position.X && point.Position.X >= 0 select point;
+            if (row.Count() == Globals.maxX) return true;
+            return false;
         }
         void ClearRow(int n)
         {
-            List<Square> marked = new List<Square>();
-            foreach (Square item in squares)
-            {
-                if (item.Position.Y == n) marked.Add(item);
-            }
-            foreach (Square item in marked)
-            {
-                squares.Remove(item);
-            }
-
+            var row = from point in squares
+                      where point.Position.Y == n && Globals.maxX > point.Position.X && point.Position.X >= 0 select point;
+            row.All(point => squares.Remove(point));          
             squares.ForEach(delegate (Square item)
             {
                 if (item.Position.Y < n && item.toMoveWhenCleared) item.Move(Direction.Down, 1, true);
@@ -79,10 +67,7 @@ namespace Tetris.Core
         {
             if (changedCurrentPiece) return;
 
-            if (heldPiece is null)
-            {
-                heldPiece = Dequeue();
-            }
+            if (heldPiece is null)heldPiece = Dequeue();
             
             heldPiece.Move(Globals.startPos, true);
             fallingPiece.Move(Globals.holdPos, true);
@@ -126,10 +111,7 @@ namespace Tetris.Core
         {
             Piece dequeued = queue.Dequeue();
             dequeued.Move(Globals.startPos, true);
-            foreach (Piece item in queue)
-            {
-                item.Move(Direction.Down, 4, true);
-            }
+            foreach (Piece item in queue) item.Move(Direction.Down, 4, true);
             queue.Enqueue(new Piece(Globals.queueLastPos));
             return dequeued;
         }

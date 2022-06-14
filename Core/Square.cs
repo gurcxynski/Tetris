@@ -44,6 +44,7 @@ namespace Tetris.Core
                 Direction.Right => new Vector2(amount, 0),
                 Direction.Down => new Vector2(0, amount),
                 Direction.Up => new Vector2(0, -amount),
+                _ => new Vector2(0)
             };
             
             Move(newPos, force);
