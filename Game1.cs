@@ -36,19 +36,20 @@ public class Game1 : Game
         Globals.mouse = new();
 
         scene = new();
-        new Piece(PieceType.O, new Vector2(3, 3));
-        new Piece(PieceType.S, new Vector2(7, 7));
         self = this;
     }
     protected override void Initialize()
     {
-        base.Initialize();
-
         IsMouseVisible = true;
         graphics.PreferredBackBufferWidth = Config.cellSize * Config.cellsX;
         graphics.PreferredBackBufferHeight = Config.cellSize * Config.cellsY;
 
         graphics.ApplyChanges();
+
+
+        scene.Initialize();
+
+        base.Initialize();
     }
     protected override void LoadContent()
     {

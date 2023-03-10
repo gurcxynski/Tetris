@@ -69,7 +69,7 @@ public class Piece
         {
             Vector2 relative = item.Bounds.Position - position;
             if (!Game1.scene.CanMoveInto(pos + relative)) return false;
-            item.Move(pos + relative, true);
+            item.Move(pos + relative);
         }
         position = pos;
         return true;
@@ -88,10 +88,10 @@ public class Piece
         
         foreach (Square item in squares)
         {
-            if (!Game1.scene.CanMoveInto(item.Bounds.Position + change)) return false;
+            if (!Game1.scene.CanMoveInto(item.gridPosition + change)) return false;
         }
         
-        squares.ForEach(delegate (Square square) { square.Move(square.Bounds.Position + change); });
+        squares.ForEach(delegate (Square square) { square.Move(square.gridPosition + change); });
 
         position += change;
         

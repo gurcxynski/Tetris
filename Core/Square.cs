@@ -7,7 +7,7 @@ public class Square
 {
     Color color;
     public RectangleF Bounds { get; private set; }
-    
+    public Vector2 gridPosition;
     public Square(PieceType type, Vector2 position)
     {
         color = type switch
@@ -21,11 +21,12 @@ public class Square
             PieceType.L => Color.Orange,
             _ => Color.White,
         };
-        Bounds = new(position * Config.cellSize, new Size2(Config.cellSize, Config.cellSize)); 
+        Bounds = new(position * Config.cellSize, new Size2(Config.cellSize, Config.cellSize));
+        gridPosition = position;
     }
     public bool CheckMove(Direction direction, float amount = 1)
     {
-        Vector2 newPos = Bounds.Position + direction switch
+        Vector2 newPos = gridPosition + direction switch
         {
             Direction.Left => new Vector2(-amount, 0),
             Direction.Right => new Vector2(amount, 0),
@@ -36,16 +37,17 @@ public class Square
 
         return Game1.scene.CanMoveInto(newPos);
     }
-    public bool Move(Vector2 pos, bool force = false)
+    public bool Move(Vector2 pos)
     {
-        if (!Game1.scene.CanMoveInto(Bounds.Position) && !force) return false;
+        if (!Game1.scene.CanMoveInto(pos)) return false;
         Bounds = new(pos * Config.cellSize, new Size2(Config.cellSize, Config.cellSize));
+        gridPosition = pos;
         return true;
     }
     
-    public void Move(Direction direction, float amount = 1, bool force = false)
+    public void Move(Direction direction, float amount = 1)
     {
-        Vector2 newPos = Bounds.Position + direction switch
+        Vector2 newPos = gridPosition + direction switch
         {
             Direction.Left => new Vector2(-amount, 0),
             Direction.Right => new Vector2(amount, 0),
@@ -54,7 +56,7 @@ public class Square
             _ => new Vector2(0)
         };
         
-        Move(newPos, force);
+        Move(newPos);
     }
     public void Draw(SpriteBatch spriteBatch) => spriteBatch.FillRectangle(Bounds, color);
 }

@@ -1,7 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Tetris.Core;
 
@@ -9,41 +12,43 @@ public class GameScene
 {
     Piece falling;
     readonly List<Square> squares;
-
+    Queue<PieceType> queue = new();
 
     //        int score = 0;
     //        double sinceMove = 0;
     //        bool initialized = false;
     //        bool changedCurrentPiece = false;
-    //        bool pause = false;
 
 
     public GameScene()
     {
         squares = new List<Square>();
-        //Globals.keyboard.OnKeyReleased += HandleInput;
+        QueueNew(3);
+        Globals.keyboard.OnKeyReleased += HandleInput;
     }
-    //        public void Initialize()
-    //        {
-    //            queue.Enqueue(new Piece(Globals.queueLastPos + new Vector2(0, 8)));
-    //            queue.Enqueue(new Piece(Globals.queueLastPos + new Vector2(0, 4)));
-    //            queue.Enqueue(new Piece(Globals.queueLastPos));
-
-    //            falling = new Piece(Globals.startPos);
-
-    //            Settings.gravity = 1;
-
-
-    //            File.Create("score.txt").Dispose();
-
-    //            initialized = true;
-
-    //        }
+    public void Initialize()
+    {
+        falling = new Piece(queue.Dequeue(), Config.start);
+        QueueNew();
+    }
+    void QueueNew(int n = 1)
+    {
+        var rnd = new Random();
+        for (int i = 0; i < n; i++)
+        {
+            queue.Enqueue((PieceType)rnd.Next(7));
+        }
+    }
+    void TakeNew()
+    {
+        falling = new Piece(queue.Dequeue(), Config.start);
+        QueueNew();
+    }
     public void Add(Square arg)
     { 
         squares.Add(arg);
     }
-        
+
     //        bool IsRowFull(int n)
     //        {
     //            var row =  from point in squares
@@ -75,45 +80,29 @@ public class GameScene
 
     //            changedCurrentPiece = true;
     //        }
-    //        void HandleInput(Keys button)
-    //        {
-    //            if (Globals.state != GameState.gameRunning) return;
-    //            if (button == Keys.P) pause = !pause;
-    //            if (pause) return;
-    //            switch (button)
-    //            {
-    //                case Keys.Left:
-    //                    falling.Step(Direction.Left);
-    //                    break;
-    //                case Keys.Right:
-    //                    falling.Step(Direction.Right);
-    //                    break;
-    //                case Keys.Up:
-    //                    Hold();
-    //                    break;
-    //                case Keys.Down:
-    //                    while (falling.Fall()) { };
-    //                    TakeNewPiece();
-    //                    sinceMove = 0;
-    //                    score += 2 * Settings.gravity;
-    //                    break;
-    //                case Keys.Space:
-    //                    falling.Turn();
-    //                    break;
-    //                case Keys.Escape:
-    //                    Globals.state = GameState.startMenu;
-    //                    Globals.menus["start"].Enable();
-    //                    break;
-    //            }
-    //        }
-    //        Piece Dequeue()
-    //        {
-    //            Piece dequeued = queue.Dequeue();
-    //            dequeued.Move(Globals.startPos, true);
-    //            foreach (Piece item in queue) item.Step(Direction.Down, 4, true);
-    //            queue.Enqueue(new Piece(Globals.queueLastPos));
-    //            return dequeued;
-    //        }
+    void HandleInput(Keys button)
+    {
+        switch (button)
+        {
+            case Keys.Left:
+                falling.Step(Direction.Left);
+                break;
+            case Keys.Right:
+                falling.Step(Direction.Right);
+                break;
+            case Keys.Up:
+                falling.Step(Direction.Up);
+                break;
+            case Keys.Down:
+                falling.Step(Direction.Down);
+                break;
+            case Keys.Space:
+                falling.Turn();
+                break;
+            case Keys.Escape:
+                break;
+        }
+    }
     //        bool TakeNewPiece()
     //        {
     //            foreach (Square item in squares)
@@ -163,40 +152,40 @@ public class GameScene
 
     //            return true;
     //        }
-            public bool Update(GameTime updateTime)
-            {
-    //            if (!initialized) Initialize();
+    public bool Update(GameTime updateTime)
+    {
+        //            if (!initialized) Initialize();
 
-    //            if (updateTime.TotalGameTime.TotalMilliseconds - sinceMove > 200 - Settings.gravity * 20 && !pause)
-    //            {
-    //                sinceMove = updateTime.TotalGameTime.TotalMilliseconds;
+        //            if (updateTime.TotalGameTime.TotalMilliseconds - sinceMove > 200 - Settings.gravity * 20 && !pause)
+        //            {
+        //                sinceMove = updateTime.TotalGameTime.TotalMilliseconds;
 
-    //                if (!falling.Fall())
-    //                {
-    //                    score += Settings.gravity;
-    //                    if (!TakeNewPiece())
-    //                    {
-    //                        int max_score = 0;
-    //                        int.TryParse(File.ReadAllText("score.txt"), out max_score);
-    //                        if (score > max_score)
-    //                        {
-    //                            using StreamWriter writer = new StreamWriter("score.txt");
-    //                            writer.Flush();
-    //                            writer.WriteLine(score);
-    //                        }
-    //                        return false;
-    //                    }
-    //                }
-    //            }
-                return true;
-            }
+        //                if (!falling.Fall())
+        //                {
+        //                    score += Settings.gravity;
+        //                    if (!TakeNewPiece())
+        //                    {
+        //                        int max_score = 0;
+        //                        int.TryParse(File.ReadAllText("score.txt"), out max_score);
+        //                        if (score > max_score)
+        //                        {
+        //                            using StreamWriter writer = new StreamWriter("score.txt");
+        //                            writer.Flush();
+        //                            writer.WriteLine(score);
+        //                        }
+        //                        return false;
+        //                    }
+        //                }
+        //            }
+        return true;
+    }
     public bool CanMoveInto(Vector2 pos)
     {
-        if (pos.X < 0 || pos.X >= Config.cellsX|| pos.Y >= Config.cellsY) return false;
-        foreach (Square item in squares)
-        {
-            if (item.Bounds.Position == (Point2)pos && !falling.squares.Contains(item)) return false;
-        }
+        //if (pos.X < 0 || pos.X >= Config.cellsX || pos.Y >= Config.cellsY) return false;
+        //foreach (Square item in squares)
+        //{
+        //    if (item.Bounds.Position == (Point2)pos && !falling.squares.Contains(item)) return false;
+        //}
         return true;
     }
     public void Draw(SpriteBatch spriteBatch) => squares.ForEach(delegate (Square item) { item.Draw(spriteBatch); });
