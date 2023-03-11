@@ -15,8 +15,7 @@ public class GameScene
     Queue<PieceType> queue = new();
 
     //        int score = 0;
-    //        double sinceMove = 0;
-    //        bool initialized = false;
+    double lastTick = 0;
     //        bool changedCurrentPiece = false;
 
 
@@ -91,15 +90,15 @@ public class GameScene
                 falling.Step(Direction.Right);
                 break;
             case Keys.Up:
-                falling.Step(Direction.Up);
                 break;
             case Keys.Down:
-                falling.Step(Direction.Down);
+                while (falling.Fall());
                 break;
             case Keys.Space:
                 falling.Turn();
                 break;
             case Keys.Escape:
+                TakeNew();
                 break;
         }
     }
@@ -154,38 +153,36 @@ public class GameScene
     //        }
     public bool Update(GameTime updateTime)
     {
-        //            if (!initialized) Initialize();
+        if (updateTime.TotalGameTime.TotalMilliseconds - lastTick > Config.tickSpeed)
+        {
+            lastTick = updateTime.TotalGameTime.TotalMilliseconds;
 
-        //            if (updateTime.TotalGameTime.TotalMilliseconds - sinceMove > 200 - Settings.gravity * 20 && !pause)
-        //            {
-        //                sinceMove = updateTime.TotalGameTime.TotalMilliseconds;
-
-        //                if (!falling.Fall())
-        //                {
-        //                    score += Settings.gravity;
-        //                    if (!TakeNewPiece())
-        //                    {
-        //                        int max_score = 0;
-        //                        int.TryParse(File.ReadAllText("score.txt"), out max_score);
-        //                        if (score > max_score)
-        //                        {
-        //                            using StreamWriter writer = new StreamWriter("score.txt");
-        //                            writer.Flush();
-        //                            writer.WriteLine(score);
-        //                        }
-        //                        return false;
-        //                    }
-        //                }
-        //            }
+            if (!falling.Fall())
+            {
+                TakeNew();
+                //if (!TakeNewPiece())
+                //{
+                //    int max_score = 0;
+                //    int.TryParse(File.ReadAllText("score.txt"), out max_score);
+                //    if (score > max_score)
+                //    {
+                //        using StreamWriter writer = new StreamWriter("score.txt");
+                //        writer.Flush();
+                //        writer.WriteLine(score);
+                //    }
+                //    return false;
+                //}
+            }
+        }
         return true;
     }
-    public bool CanMoveInto(Vector2 pos)
+    public bool CanMoveInto(Vector2 target)
     {
-        //if (pos.X < 0 || pos.X >= Config.cellsX || pos.Y >= Config.cellsY) return false;
-        //foreach (Square item in squares)
-        //{
-        //    if (item.Bounds.Position == (Point2)pos && !falling.squares.Contains(item)) return false;
-        //}
+        if (target.X < 0 || target.X >= Config.cellsX || target.Y >= Config.cellsY) return false;
+        foreach (var item in squares)
+        {
+            if (item.gridPosition == target && !falling.squares.Contains(item)) return false;
+        }
         return true;
     }
     public void Draw(SpriteBatch spriteBatch) => squares.ForEach(delegate (Square item) { item.Draw(spriteBatch); });

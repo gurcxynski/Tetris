@@ -377,6 +377,7 @@ public class Piece
                 }
                 break;
         }
+        // TODO: FIX BLUE PIECE ROTATION CRASH, CHECK ALL PIECES ROTATIONS (KNOWN BUGS: RED)
         SetSquaresTo(list);
     }
     public bool Fall()

@@ -8,6 +8,10 @@ namespace Tetris.Menus
         public ReturnButton(Vector2 arg) : base(arg)
         {
         }
+        public override void Initialize()
+        {
+
+        }
         protected override void Action()
         {
         }

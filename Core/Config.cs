@@ -9,8 +9,9 @@ public static class Settings
 }
 public static class Config
 {
-    public static int cellsX = 15;
-    public static int cellsY = 15;
+    public static int tickSpeed = 300;
+    public static int cellsX = 20;
+    public static int cellsY = 35;
     public static int cellSize = 20;
-    public static Vector2 start = new Vector2(6, 3);
+    public static Vector2 start = new(cellsX / 2, 3);
 }

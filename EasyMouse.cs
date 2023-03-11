@@ -59,10 +59,10 @@ namespace MonoGame.EasyInput
     /// </summary>
     public class EasyMouse
     {
-        // previous mouse state
+        // previous mouse gameState
         private MouseState _prevState;
 
-        // current mouse state
+        // current mouse gameState
         private MouseState _newState;
 
         // store mouse position seperately, since we can change it.
@@ -117,7 +117,7 @@ namespace MonoGame.EasyInput
         /// </summary>
         public void Update()
         {
-            // store previous state and get new state
+            // store previous gameState and get new gameState
             _prevState = _newState;
             _newState = Mouse.GetState();
 
@@ -204,7 +204,7 @@ namespace MonoGame.EasyInput
         /// <summary>
         /// Return if a mouse button is pressed.
         /// </summary>
-        /// <param name="state">Mouse state to check.</param>
+        /// <param name="state">Mouse gameState to check.</param>
         /// <param name="button">Button to check.</param>
         /// <returns>If button is down.</returns>
         private bool IsPressed(ref MouseState state, MouseButtons button)

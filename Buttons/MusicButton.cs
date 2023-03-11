@@ -10,6 +10,10 @@ namespace Tetris.Buttons
         {
 
         }
+        public override void Initialize()
+        {
+            
+        }
         protected override void Action()
         {
             if (Settings.music)

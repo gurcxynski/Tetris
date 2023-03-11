@@ -17,10 +17,10 @@ namespace MonoGame.EasyInput
     /// </summary>
     public class EasyKeyboard
     {
-        // previous keyboard state
+        // previous keyboard gameState
         private KeyboardState _prevState;
 
-        // current keyboard state
+        // current keyboard gameState
         private KeyboardState _newState;
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace MonoGame.EasyInput
         /// </summary>
         public void Update()
         {
-            // store previous state and get new state
+            // store previous gameState and get new gameState
             _prevState = _newState;
             _newState = Keyboard.GetState();
 

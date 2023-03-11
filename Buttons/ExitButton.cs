@@ -9,6 +9,10 @@ namespace Tetris.Buttons
         {
         }
 
+        public override void Initialize()
+        {
+
+        }
         protected override void Action() => Game1.self.Exit();
     }
 }

@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Media;
 using MonoGame.EasyInput;
 using System.Collections.Generic;
 using Tetris.Core;
+using Tetris.Menus;
 
 namespace Tetris;
 
@@ -27,6 +28,9 @@ public class Game1 : Game
     readonly GraphicsDeviceManager graphics;
     SpriteBatch spriteBatch;
     public static GameScene scene;
+    public static StateMachine gameState;
+    public StartMenu start;
+    public OptionsMenu options;
     public Game1()
     {
         graphics = new GraphicsDeviceManager(this);
@@ -36,6 +40,13 @@ public class Game1 : Game
         Globals.mouse = new();
 
         scene = new();
+        gameState = new();
+
+        start = new();
+        start.Enable();
+        options = new();
+
+
         self = this;
     }
     protected override void Initialize()
@@ -61,8 +72,14 @@ public class Game1 : Game
 
         textures = new()
         {
-            ["block"] = Content.Load<Texture2D>("block")
+            ["block"] = Content.Load<Texture2D>("block"),
+            ["playbutton"] = Content.Load<Texture2D>("buttons/buttonnew1"),
+            ["menubackground"] = Content.Load<Texture2D>("back")
         };
+
+        start.Initialize();
+        options.Initialize();
+
 
         MediaPlayer.Play(Globals.song);
         MediaPlayer.IsRepeating = true;
@@ -73,18 +90,45 @@ public class Game1 : Game
         Globals.keyboard.Update();
         Globals.mouse.Update();
 
-        scene.Update(gameTime);
-
+        if (gameState.state == StateMachine.GameState.running) 
+        switch (gameState.state)
+        {
+            case StateMachine.GameState.running:
+                scene.Update(gameTime);
+                break;
+            case StateMachine.GameState.startMenu:
+                start.Update();
+                break;
+            case StateMachine.GameState.optionsMenu:
+                options.Update();
+                break;
+            case StateMachine.GameState.drawingText: 
+                break;
+        }
         base.Update(gameTime);
     }
 
     protected override void Draw(GameTime gameTime)
     {
-        GraphicsDevice.Clear(Color.Black);
+        GraphicsDevice.Clear(Color.LightGray);
 
         spriteBatch.Begin();
 
-        scene.Draw(spriteBatch);
+        switch (gameState.state)
+        {
+            case StateMachine.GameState.running:
+                scene.Draw(spriteBatch);
+                break;
+            case StateMachine.GameState.startMenu:
+                spriteBatch.Draw(textures["menubackground"], new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
+                start.Draw(spriteBatch);
+                break;
+            case StateMachine.GameState.optionsMenu:
+                options.Draw(spriteBatch);
+                break;
+            case StateMachine.GameState.drawingText:
+                break;
+        }
 
         spriteBatch.End();
 

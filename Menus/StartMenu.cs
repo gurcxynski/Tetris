@@ -1,13 +1,12 @@
-using Microsoft.Xna.Framework;
 using Tetris.Buttons;
 using Tetris.Core;
 
-namespace Tetris.Menus
+namespace Tetris.Menus;
+
+public class StartMenu : Menu
 {
-    public class StartMenu : Menu
+    public StartMenu()
     {
-        public StartMenu()
-        {
-        }
+        Add(new PlayButton(new(100, 100)));
     }
 }
