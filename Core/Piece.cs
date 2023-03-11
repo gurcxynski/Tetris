@@ -6,11 +6,11 @@ namespace Tetris.Core;
 public class Piece
 {
     public List<Square> squares;
-    PieceType Type;
+    public PieceType Type { get; init; }
     Direction direction;
-    Vector2 position;
+    public Vector2 position { get; private set; }
 
-    public Piece(PieceType type, Vector2 startPos)
+    public Piece(PieceType type, Vector2 startPos, bool add = true, int squareSize = Config.cellSize)
     {
         squares = new List<Square>();
 
@@ -18,48 +18,48 @@ public class Piece
         Type = type;
         position = startPos;
 
-        squares.Add(new Square(Type, startPos));
-        Fill();
-        squares.ForEach(Game1.scene.Add);
+        squares.Add(new Square(Type, startPos, squareSize));
+        Fill(squareSize);
+        if (add) squares.ForEach(Game1.scene.Add);
     }
-    void Fill()
+    void Fill(int size)
     {
         switch (Type)
         {
             case PieceType.O:
-                squares.Add(new Square(Type, position + new Vector2(1, 0)));
-                squares.Add(new Square(Type, position + new Vector2(1, 1)));
-                squares.Add(new Square(Type, position + new Vector2(0, 1)));
+                squares.Add(new Square(Type, position + new Vector2(1, 0), size));
+                squares.Add(new Square(Type, position + new Vector2(1, 1), size));
+                squares.Add(new Square(Type, position + new Vector2(0, 1), size));
                 break;
             case PieceType.I:
-                squares.Add(new Square(Type, position + new Vector2(0, -1)));
-                squares.Add(new Square(Type, position + new Vector2(0, 1)));
-                squares.Add(new Square(Type, position + new Vector2(0, 2)));
+                squares.Add(new Square(Type, position + new Vector2(0, -1), size));
+                squares.Add(new Square(Type, position + new Vector2(0, 1), size));
+                squares.Add(new Square(Type, position + new Vector2(0, 2), size));
                 break;
             case PieceType.S:
-                squares.Add(new Square(Type, position + new Vector2(0, -1)));
-                squares.Add(new Square(Type, position + new Vector2(1, 0)));
-                squares.Add(new Square(Type, position + new Vector2(1, 1)));
+                squares.Add(new Square(Type, position + new Vector2(0, -1), size));
+                squares.Add(new Square(Type, position + new Vector2(1, 0), size));
+                squares.Add(new Square(Type, position + new Vector2(1, 1), size));
                 break;
             case PieceType.Z:
-                squares.Add(new Square(Type, position + new Vector2(1, -1)));
-                squares.Add(new Square(Type, position + new Vector2(0, 1)));
-                squares.Add(new Square(Type, position + new Vector2(1, 0)));
+                squares.Add(new Square(Type, position + new Vector2(1, -1), size));
+                squares.Add(new Square(Type, position + new Vector2(0, 1), size));
+                squares.Add(new Square(Type, position + new Vector2(1, 0), size));
                 break;
             case PieceType.J:
-                squares.Add(new Square(Type, position + new Vector2(0, -1)));
-                squares.Add(new Square(Type, position + new Vector2(1, -1)));
-                squares.Add(new Square(Type, position + new Vector2(0, 1)));
+                squares.Add(new Square(Type, position + new Vector2(0, -1), size));
+                squares.Add(new Square(Type, position + new Vector2(1, -1), size));
+                squares.Add(new Square(Type, position + new Vector2(0, 1), size));
                 break;
             case PieceType.L:
-                squares.Add(new Square(Type, position + new Vector2(0, -1)));
-                squares.Add(new Square(Type, position + new Vector2(0, 1)));
-                squares.Add(new Square(Type, position + new Vector2(1, 1)));
+                squares.Add(new Square(Type, position + new Vector2(0, -1), size));
+                squares.Add(new Square(Type, position + new Vector2(0, 1), size));
+                squares.Add(new Square(Type, position + new Vector2(1, 1), size));
                 break;
             case PieceType.T:
-                squares.Add(new Square(Type, position + new Vector2(0, -1)));
-                squares.Add(new Square(Type, position + new Vector2(1, 0)));
-                squares.Add(new Square(Type, position + new Vector2(0, 1)));
+                squares.Add(new Square(Type, position + new Vector2(0, -1), size));
+                squares.Add(new Square(Type, position + new Vector2(1, 0), size));
+                squares.Add(new Square(Type, position + new Vector2(0, 1), size));
                 break;
         }
     }

@@ -13,7 +13,7 @@ public abstract class Button
     protected Button(Vector2 arg)
     {
         Globals.mouse.OnMouseButtonPressed += OnClick;
-        bounds = new(arg, new Size2(100, 30));
+        bounds = new(arg + Config.margin, new Size2(100, 30));
     }
     public void Draw(SpriteBatch spriteBatch) => spriteBatch.Draw(texture, (Rectangle)bounds, Hovered() ? Color.DarkGray : Color.White);
     public abstract void Initialize();

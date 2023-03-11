@@ -13,10 +13,10 @@ public class GameScene
     Piece falling;
     readonly List<Square> squares;
     Queue<PieceType> queue = new();
-
+    PieceType? held = null;
     //        int score = 0;
     double lastTick = 0;
-    //        bool changedCurrentPiece = false;
+    bool changedPiece = false;
 
 
     public GameScene()
@@ -42,6 +42,7 @@ public class GameScene
     {
         falling = new Piece(queue.Dequeue(), Config.start);
         QueueNew();
+        changedPiece = false;
     }
     public void Add(Square arg)
     { 
@@ -66,19 +67,22 @@ public class GameScene
     //            });
     //        }
 
-    //        void Hold()
-    //        {
-    //            if (changedCurrentPiece) return;
-
-    //            if (heldPiece is null)heldPiece = Dequeue();
-
-    //            heldPiece.Move(Globals.startPos, true);
-    //            falling.Move(Globals.holdPos, true);
-
-    //            (falling, heldPiece) = (heldPiece, falling);
-
-    //            changedCurrentPiece = true;
-    //        }
+    void Hold()
+    {
+        squares.RemoveAll(square => falling.squares.Contains(square));
+        if (held is null)
+        {
+            held = falling.Type;
+            TakeNew();
+        }
+        else
+        {
+            var temp = falling.Type;
+            falling = new Piece((PieceType)held, falling.position);
+            held = temp;
+        }
+        changedPiece = true;
+    }
     void HandleInput(Keys button)
     {
         switch (button)
@@ -90,6 +94,7 @@ public class GameScene
                 falling.Step(Direction.Right);
                 break;
             case Keys.Up:
+                if (!changedPiece) Hold();
                 break;
             case Keys.Down:
                 while (falling.Fall());
@@ -185,5 +190,17 @@ public class GameScene
         }
         return true;
     }
-    public void Draw(SpriteBatch spriteBatch) => squares.ForEach(delegate (Square item) { item.Draw(spriteBatch); });
+    public void Draw(SpriteBatch spriteBatch) 
+    { 
+        squares.ForEach(delegate (Square item) { item.Draw(spriteBatch); });
+        DrawSmallPiece(queue.ToArray()[2], Config.queuePosition, spriteBatch);
+        DrawSmallPiece(queue.ToArray()[1], Config.queuePosition + new Vector2(0, 5), spriteBatch);
+        DrawSmallPiece(queue.ToArray()[0], Config.queuePosition + new Vector2(0, 10), spriteBatch);
+        if (held is not null) DrawSmallPiece((PieceType)held, Config.heldPosition, spriteBatch);
+    }
+    void DrawSmallPiece(PieceType pieceType, Vector2 position, SpriteBatch spriteBatch)
+    {
+        var piece = new Piece(pieceType, position, false, 25);
+        piece.squares.ForEach(delegate (Square square) { square.Draw(spriteBatch); });
+    }
 }

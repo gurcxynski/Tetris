@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
 using MonoGame.EasyInput;
+using MonoGame.Extended;
 using System.Collections.Generic;
 using Tetris.Core;
 using Tetris.Menus;
@@ -52,8 +53,8 @@ public class Game1 : Game
     protected override void Initialize()
     {
         IsMouseVisible = true;
-        graphics.PreferredBackBufferWidth = Config.cellSize * Config.cellsX;
-        graphics.PreferredBackBufferHeight = Config.cellSize * Config.cellsY;
+        graphics.PreferredBackBufferWidth = Config.cellSize * Config.cellsX + (int)Config.margin.X * 2;
+        graphics.PreferredBackBufferHeight = Config.cellSize * Config.cellsY + (int)Config.margin.Y * 2;
 
         graphics.ApplyChanges();
 
@@ -118,6 +119,7 @@ public class Game1 : Game
         {
             case StateMachine.GameState.running:
                 scene.Draw(spriteBatch);
+                spriteBatch.DrawRectangle(new RectangleF(Config.margin.X, Config.margin.Y, Config.cellSize * Config.cellsX, Config.cellSize * Config.cellsY), Color.Red);
                 break;
             case StateMachine.GameState.startMenu:
                 spriteBatch.Draw(textures["menubackground"], new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
