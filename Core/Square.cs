@@ -37,15 +37,13 @@ public class Square
 
         return Game1.scene.CanMoveInto(newPos);
     }
-    public bool Move(Vector2 target)
+    public void MoveToPos(Vector2 target)
     {
-        if (!Game1.scene.CanMoveInto(target)) return false;
         Bounds = new(target * Config.cellSize + Config.margin, new Size2(Config.cellSize, Config.cellSize));
         gridPosition = target;
-        return true;
     }
 
-    public void Move(Direction direction, float amount = 1)
+    public bool Step(Direction direction, float amount = 1)
     {
         Vector2 newPos = gridPosition + direction switch
         {
@@ -55,11 +53,17 @@ public class Square
             Direction.Up => new Vector2(0, -amount),
             _ => new Vector2(0)
         };
-
-        Move(newPos);
+        if (!CheckMove(direction, amount)) return false;
+        MoveToPos(newPos);
+        return true;
     }
-    public void Draw(SpriteBatch spriteBatch)
+    public void Draw(SpriteBatch spriteBatch, bool shade = false)
     {
+        if (shade)
+        {
+            spriteBatch.FillRectangle(Bounds, Color.DarkGray);
+            return;
+        }
         spriteBatch.FillRectangle(Bounds, color);
         spriteBatch.DrawRectangle(Bounds, Color.Black, 1);
     }

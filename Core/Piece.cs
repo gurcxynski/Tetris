@@ -7,12 +7,12 @@ public class Piece
 {
     public List<Square> squares;
     public PieceType Type { get; init; }
-    Direction direction;
+    public Direction direction { get; private set; }
     public Vector2 position { get; private set; }
 
     public Piece(PieceType type, Vector2 startPos, bool add = true, int squareSize = Config.cellSize)
     {
-        squares = new List<Square>();
+        squares = new();
 
         direction = Direction.Up;
         Type = type;
@@ -63,17 +63,17 @@ public class Piece
                 break;
         }
     }
-    public bool MoveTo(Vector2 pos)
-    {
-        foreach (Square item in squares)
-        {
-            Vector2 relative = item.Bounds.Position - position;
-            if (!Game1.scene.CanMoveInto(pos + relative)) return false;
-            item.Move(pos + relative);
-        }
-        position = pos;
-        return true;
-    }
+    //public bool MoveTo(Vector2 pos)
+    //{
+    //    foreach (Square item in squares)
+    //    {
+    //        Vector2 relative = item.Bounds.Position - position;
+    //        if (!Game1.scene.CanMoveInto(pos + relative)) return false;
+    //        item.MoveToPos(pos + relative);
+    //    }
+    //    position = pos;
+    //    return true;
+    //}
     
     public bool Step(Direction direction, float amount = 1)
     {
@@ -88,27 +88,27 @@ public class Piece
         
         foreach (Square item in squares)
         {
-            if (!Game1.scene.CanMoveInto(item.gridPosition + change)) return false;
+            if (!item.CheckMove(direction, amount)) return false;
         }
         
-        squares.ForEach(delegate (Square square) { square.Move(square.gridPosition + change); });
+        squares.ForEach(delegate (Square square) { square.MoveToPos(square.gridPosition + change); });
 
         position += change;
         
         return true;
     }
-    bool SetSquaresTo(List<Vector2> arg)
+    bool SetSquaresTo(List<Vector2> arg, bool force = false)
     {
         var taken = false;
         arg.ForEach(delegate (Vector2 pos) { if (!Game1.scene.CanMoveInto(pos)) taken = true; });
-        if (taken) return false;
+        if (taken && !force) return false;
         for (int i = 1; i < 4; i++)
         {
-            squares[i].Move(arg[i - 1]);
+            squares[i].MoveToPos(arg[i - 1]);
         }
         return true;
     }
-    public void Turn()
+    public void Turn(bool force = false)
     {
         GameScene scene = Game1.scene;
         List<Vector2> list = new();
@@ -167,7 +167,7 @@ public class Piece
                         }
                         for (int i = 0; i < 4; i++)
                         {
-                            squares[i].Move(new Vector2(position.X - 2 + i, position.Y + 1));
+                            squares[i].MoveToPos(new Vector2(position.X - 2 + i, position.Y + 1));
                         }
                         position += new Vector2(0, 1);
                         direction = Direction.Right;
@@ -179,7 +179,7 @@ public class Piece
                         }
                         for (int i = 0; i < 4; i++)
                         {
-                            squares[i].Move(new Vector2(position.X - 1 + i, position.Y - 1));
+                            squares[i].MoveToPos(new Vector2(position.X - 1 + i, position.Y - 1));
                         }
                         position += new Vector2(0, -1);
                         direction = Direction.Left;
@@ -191,7 +191,7 @@ public class Piece
                         }
                         for (int i = 0; i < 4; i++)
                         {
-                            squares[i].Move(new Vector2(position.X + 1, position.Y - 1 + i));
+                            squares[i].MoveToPos(new Vector2(position.X + 1, position.Y - 1 + i));
                         }
                         position += new Vector2(1, 0);
                         direction = Direction.Up;
@@ -203,12 +203,13 @@ public class Piece
                         }
                         for (int i = 0; i < 4; i++)
                         {
-                            squares[i].Move(new Vector2(position.X - 1, position.Y - 2 + i));
+                            squares[i].MoveToPos(new Vector2(position.X - 1, position.Y - 2 + i));
                         }
                         position += new Vector2(-1, 0);
                         direction = Direction.Down;
                         break;
                 }
+                return;
                 break;
             case PieceType.S:
                 switch (direction)
@@ -377,8 +378,7 @@ public class Piece
                 }
                 break;
         }
-        // TODO: FIX BLUE PIECE ROTATION CRASH, CHECK ALL PIECES ROTATIONS (KNOWN BUGS: RED)
-        SetSquaresTo(list);
+        SetSquaresTo(list, force);
     }
     public bool Fall()
     {
@@ -387,7 +387,7 @@ public class Piece
             if (!item.CheckMove(Direction.Down)) return false;
         }
 
-        squares.ForEach(delegate (Square square) { square.Move(Direction.Down); });
+        squares.ForEach(delegate (Square square) { square.Step(Direction.Down); });
 
         position += new Vector2(0, 1);
         return true;

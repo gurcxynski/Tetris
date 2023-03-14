@@ -5,12 +5,14 @@ using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Tetris.Core;
 
 public class GameScene
 {
     Piece falling;
+    Piece shade;
     readonly List<Square> squares;
     Queue<PieceType> queue = new();
     PieceType? held = null;
@@ -27,7 +29,8 @@ public class GameScene
     }
     public void Initialize()
     {
-        falling = new Piece(queue.Dequeue(), Config.start);
+        falling = new(queue.Dequeue(), Config.start);
+        NewShade();
         QueueNew();
     }
     void QueueNew(int n = 1)
@@ -38,9 +41,26 @@ public class GameScene
             queue.Enqueue((PieceType)rnd.Next(7));
         }
     }
+    void NewShade()
+    {
+        shade = new(falling.Type, falling.position, false, 25);
+        while (shade.Fall()) ;
+    }
+    void UpdateShade()
+    {
+        shade.Step(Direction.Up, 20);
+        while (shade.Fall()) ;
+    }
+    void UpdateShade(Direction dir)
+    {
+        shade.Step(Direction.Up, 20);
+        shade.Step(dir);
+        while (shade.Fall()) ;
+    }
     void TakeNew()
     {
-        falling = new Piece(queue.Dequeue(), Config.start);
+        falling = new(queue.Dequeue(), Config.start);
+        NewShade();
         QueueNew();
         changedPiece = false;
     }
@@ -48,24 +68,22 @@ public class GameScene
     { 
         squares.Add(arg);
     }
-
-    //        bool IsRowFull(int n)
-    //        {
-    //            var row =  from point in squares
-    //                       where point.Position.Y == n && Globals.maxX > point.Position.X && point.Position.X >= 0 select point;
-    //            if (row.Count() == Globals.maxX) return true;
-    //            return false;
-    //        }
-    //        void ClearRow(int n)
-    //        {
-    //            var row = from point in squares
-    //                      where point.Position.Y == n && Globals.maxX > point.Position.X && point.Position.X >= 0 select point;
-    //            row.All(point => squares.Remove(point));          
-    //            squares.ForEach(delegate (Square item)
-    //            {
-    //                if (item.Position.Y < n && item.toMoveWhenCleared) item.Move(Direction.Down, 1, true);
-    //            });
-    //        }
+    bool IsRowFull(int n)
+    {
+        var row = from square in squares
+                  where square.gridPosition.Y == n
+                  select square;
+        if (row.Count() == Config.cellsX) return true;
+        return false;
+    }
+    void ClearRow(int n)
+    {
+        squares.RemoveAll(square => square.gridPosition.Y == n);
+        squares.ForEach(delegate (Square item)
+        {
+            if (item.gridPosition.Y < n) item.MoveToPos(item.gridPosition += new Vector2(0, 1));
+        });
+    }
 
     void Hold()
     {
@@ -78,20 +96,24 @@ public class GameScene
         else
         {
             var temp = falling.Type;
-            falling = new Piece((PieceType)held, falling.position);
+            falling = new Piece((PieceType)held, Config.start);
+            NewShade();
             held = temp;
         }
         changedPiece = true;
     }
     void HandleInput(Keys button)
     {
+        if (Game1.gameState.state != StateMachine.GameState.running) return;
         switch (button)
         {
             case Keys.Left:
                 falling.Step(Direction.Left);
+                UpdateShade(Direction.Left);
                 break;
             case Keys.Right:
                 falling.Step(Direction.Right);
+                UpdateShade(Direction.Right);
                 break;
             case Keys.Up:
                 if (!changedPiece) Hold();
@@ -101,6 +123,9 @@ public class GameScene
                 break;
             case Keys.Space:
                 falling.Turn();
+                shade.Step(Direction.Up, 20);
+                shade.Turn();
+                UpdateShade();
                 break;
             case Keys.Escape:
                 TakeNew();
@@ -165,6 +190,7 @@ public class GameScene
             if (!falling.Fall())
             {
                 TakeNew();
+
                 //if (!TakeNewPiece())
                 //{
                 //    int max_score = 0;
@@ -178,7 +204,10 @@ public class GameScene
                 //    return false;
                 //}
             }
+
         }
+        for (int i = 0; i < Config.cellsY; i++) if (IsRowFull(i)) ClearRow(i);
+        UpdateShade();
         return true;
     }
     public bool CanMoveInto(Vector2 target)
@@ -190,13 +219,17 @@ public class GameScene
         }
         return true;
     }
-    public void Draw(SpriteBatch spriteBatch) 
-    { 
+    public void Draw(SpriteBatch spriteBatch)
+    {
+        shade.squares.ForEach(delegate (Square square) { square.Draw(spriteBatch, true); });
+
         squares.ForEach(delegate (Square item) { item.Draw(spriteBatch); });
+
         DrawSmallPiece(queue.ToArray()[2], Config.queuePosition, spriteBatch);
         DrawSmallPiece(queue.ToArray()[1], Config.queuePosition + new Vector2(0, 5), spriteBatch);
         DrawSmallPiece(queue.ToArray()[0], Config.queuePosition + new Vector2(0, 10), spriteBatch);
         if (held is not null) DrawSmallPiece((PieceType)held, Config.heldPosition, spriteBatch);
+
     }
     void DrawSmallPiece(PieceType pieceType, Vector2 position, SpriteBatch spriteBatch)
     {
