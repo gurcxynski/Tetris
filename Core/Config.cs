@@ -8,7 +8,7 @@ public static class Settings
 }
 public static class Config
 {
-    public static Vector2 margin = new(100, 20);
+    public static Vector2 margin = new(100, 50);
     public static Vector2 queuePosition = new(11, 3);
     public static Vector2 heldPosition = new(-2, 3);
     public static int tickSpeed = 300;

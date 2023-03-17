@@ -10,10 +10,11 @@ namespace Tetris.Buttons
         }
         public override void Initialize()
         {
-
+            texture = Game1.textures["optionsbutton"];
         }
         protected override void Action()
         {
+            Game1.gameState.OpenOptions();
         }
     }
 }

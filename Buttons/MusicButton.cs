@@ -12,7 +12,7 @@ namespace Tetris.Buttons
         }
         public override void Initialize()
         {
-            
+            texture = Game1.textures["musicbutton"];
         }
         protected override void Action()
         {

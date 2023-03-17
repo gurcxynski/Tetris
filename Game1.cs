@@ -76,7 +76,10 @@ public class Game1 : Game
         {
             ["block"] = Content.Load<Texture2D>("block"),
             ["playbutton"] = Content.Load<Texture2D>("buttons/buttonnew1"),
-            ["menubackground"] = Content.Load<Texture2D>("back")
+            ["menubackground"] = Content.Load<Texture2D>("back"),
+            ["optionsbutton"] = Content.Load<Texture2D>("buttons/option1"),
+            ["returnbutton"] = Content.Load<Texture2D>("buttons/return1"),
+            ["musicbutton"] = Content.Load<Texture2D>("buttons/return1"),
         };
 
         start.Initialize();
@@ -118,12 +121,14 @@ public class Game1 : Game
             case StateMachine.GameState.running or StateMachine.GameState.paused:
                 scene.Draw(spriteBatch);
                 spriteBatch.DrawRectangle(new RectangleF(Config.margin.X, Config.margin.Y, Config.cellSize * Config.cellsX, Config.cellSize * Config.cellsY), Color.Red);
+                spriteBatch.DrawString(Globals.font, $"LEVEL: {scene.level} SCORE: {scene.score}", new(170, 10), Color.Black);
                 break;
             case StateMachine.GameState.startMenu:
                 spriteBatch.Draw(textures["menubackground"], new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
                 start.Draw(spriteBatch);
                 break;
             case StateMachine.GameState.optionsMenu:
+                spriteBatch.Draw(textures["menubackground"], new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
                 options.Draw(spriteBatch);
                 break;
         }

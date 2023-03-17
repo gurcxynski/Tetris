@@ -37,7 +37,10 @@ public class GameScene
     double lastTick = 0;
     bool changedPiece = false;
     Generator gen = new();
-
+    int exp = 0;
+    double tickspeed = Config.tickSpeed;
+    public int level = 1;
+    public int score = 0;
     public GameScene()
     {
         squares = new List<Square>();
@@ -64,7 +67,7 @@ public class GameScene
     }
     void UpdateShade()
     {
-        shade.Step(Direction.Up, 20);
+        shade.Step(Direction.Up, Math.Abs(falling.position.Y - shade.position.Y));
         while (shade.Fall()) ;
     }
     void UpdateShade(Direction dir)
@@ -80,10 +83,7 @@ public class GameScene
         QueueNew();
         changedPiece = false;
     }
-    public void Add(Square arg)
-    { 
-        squares.Add(arg);
-    }
+    public void Add(Square arg) => squares.Add(arg);
     bool IsRowFull(int n)
     {
         var row = from square in squares
@@ -147,11 +147,16 @@ public class GameScene
                 UpdateShade();
                 break;
             case Keys.Space or Keys.NumPad8 or Keys.NumPad2:
-                while (falling.Fall()) ;
+                var lines = 0;
+                for (; falling.Fall(); lines++) ;
+                score += lines;
                 break;
             case Keys.Escape or Keys.F1:
                 if (Game1.gameState.state == StateMachine.GameState.paused) Game1.gameState.UnPause();
                 else Game1.gameState.Pause();
+                break;
+            case Keys.D:
+                level++;
                 break;
         }
     }
@@ -206,7 +211,7 @@ public class GameScene
     //        }
     public bool Update(GameTime updateTime)
     {
-        if (updateTime.TotalGameTime.TotalMilliseconds - lastTick > Config.tickSpeed)
+        if (updateTime.TotalGameTime.TotalMilliseconds - lastTick > tickspeed)
         {
             lastTick = updateTime.TotalGameTime.TotalMilliseconds;
 
@@ -229,7 +234,36 @@ public class GameScene
             }
 
         }
-        for (int i = 0; i < Config.cellsY; i++) if (IsRowFull(i)) ClearRow(i);
+        var cleared = 0;
+        for (int i = 0; i < Config.cellsY; i++)
+        {
+            if (IsRowFull(i)) {
+                ClearRow(i);
+                cleared++;
+            }
+        }
+        exp += cleared switch
+        {
+            1 => 1,
+            2 => 3,
+            3 => 5,
+            4 => 8,
+            _ => 0
+        };
+        score += level * cleared switch
+        {
+            1 => 40,
+            2 => 100,
+            3 => 300,
+            4 => 1200,
+            _ => 0
+        };
+        if (exp >= 5 * level)
+        {
+            exp = 0;
+            level++;
+        }
+        tickspeed = 300 * Math.Pow(0.9, 0.6f * level);
         UpdateShade();
         return true;
     }

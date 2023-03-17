@@ -8,5 +8,7 @@ public class OptionsMenu : Menu
 {
     public OptionsMenu()
     {
+        Add(new EnableMusicButton(new Vector2(100, 100)));
+        Add(new ReturnButton(new(100, 400)));
     }
 }

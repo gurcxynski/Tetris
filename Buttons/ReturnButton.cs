@@ -10,10 +10,11 @@ namespace Tetris.Menus
         }
         public override void Initialize()
         {
-
+            texture = Game1.textures["returnbutton"];
         }
         protected override void Action()
         {
+            Game1.gameState.ToStartMenu();
         }
     }
 }
