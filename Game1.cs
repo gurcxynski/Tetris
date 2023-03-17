@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Media;
 using MonoGame.EasyInput;
 using MonoGame.Extended;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Tetris.Core;
 using Tetris.Menus;
 
@@ -91,7 +92,6 @@ public class Game1 : Game
         Globals.keyboard.Update();
         Globals.mouse.Update();
 
-        if (gameState.state == StateMachine.GameState.running) 
         switch (gameState.state)
         {
             case StateMachine.GameState.running:
@@ -102,8 +102,6 @@ public class Game1 : Game
                 break;
             case StateMachine.GameState.optionsMenu:
                 options.Update();
-                break;
-            case StateMachine.GameState.drawingText: 
                 break;
         }
         base.Update(gameTime);
@@ -117,7 +115,7 @@ public class Game1 : Game
 
         switch (gameState.state)
         {
-            case StateMachine.GameState.running:
+            case StateMachine.GameState.running or StateMachine.GameState.paused:
                 scene.Draw(spriteBatch);
                 spriteBatch.DrawRectangle(new RectangleF(Config.margin.X, Config.margin.Y, Config.cellSize * Config.cellsX, Config.cellSize * Config.cellsY), Color.Red);
                 break;
@@ -127,8 +125,6 @@ public class Game1 : Game
                 break;
             case StateMachine.GameState.optionsMenu:
                 options.Draw(spriteBatch);
-                break;
-            case StateMachine.GameState.drawingText:
                 break;
         }
 

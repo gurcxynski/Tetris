@@ -1,13 +1,30 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace Tetris.Core;
+
+public class Generator
+{
+    Queue<PieceType> history = new();
+    Random rnd = new();
+    public PieceType GetNew()
+    {
+        var type = (PieceType)rnd.Next(7);
+        var tries = 1;
+        while (tries < 4 && history.Contains(type))
+        {
+            type = (PieceType)rnd.Next(7);
+            tries++;
+        }
+        if (history.Count > 4) history.Dequeue();
+        history.Enqueue(type);
+        return type;
+    }
+}
 
 public class GameScene
 {
@@ -19,7 +36,7 @@ public class GameScene
     //        int score = 0;
     double lastTick = 0;
     bool changedPiece = false;
-
+    Generator gen = new();
 
     public GameScene()
     {
@@ -35,11 +52,10 @@ public class GameScene
     }
     void QueueNew(int n = 1)
     {
-        var rnd = new Random();
         for (int i = 0; i < n; i++)
-        {
-            queue.Enqueue((PieceType)rnd.Next(7));
-        }
+            {
+                queue.Enqueue(gen.GetNew());
+            }
     }
     void NewShade()
     {
@@ -104,31 +120,38 @@ public class GameScene
     }
     void HandleInput(Keys button)
     {
-        if (Game1.gameState.state != StateMachine.GameState.running) return;
+        if (Game1.gameState.state != StateMachine.GameState.running && button != Keys.Escape && button != Keys.F1) return;
         switch (button)
         {
-            case Keys.Left:
+            case Keys.Left or Keys.NumPad4:
                 falling.Step(Direction.Left);
                 UpdateShade(Direction.Left);
                 break;
-            case Keys.Right:
+            case Keys.Right or Keys.NumPad6:
                 falling.Step(Direction.Right);
                 UpdateShade(Direction.Right);
                 break;
-            case Keys.Up:
+            case Keys.C or Keys.RightShift or Keys.LeftShift or Keys.NumPad0:
                 if (!changedPiece) Hold();
                 break;
-            case Keys.Down:
-                while (falling.Fall());
-                break;
-            case Keys.Space:
-                falling.Turn();
+            case Keys.Up or Keys.X or Keys.NumPad3 or Keys.NumPad7:
+                falling.Turn(Direction.Left);
                 shade.Step(Direction.Up, 20);
-                shade.Turn();
+                shade.Turn(Direction.Left);
                 UpdateShade();
                 break;
-            case Keys.Escape:
-                TakeNew();
+            case Keys.LeftControl or Keys.RightControl or Keys.Z or Keys.NumPad1 or Keys.NumPad5 or Keys.NumPad9:
+                falling.Turn(Direction.Right);
+                shade.Step(Direction.Up, 20);
+                shade.Turn(Direction.Right);
+                UpdateShade();
+                break;
+            case Keys.Space or Keys.NumPad8 or Keys.NumPad2:
+                while (falling.Fall()) ;
+                break;
+            case Keys.Escape or Keys.F1:
+                if (Game1.gameState.state == StateMachine.GameState.paused) Game1.gameState.UnPause();
+                else Game1.gameState.Pause();
                 break;
         }
     }

@@ -13,10 +13,10 @@ public class Square
         color = type switch
         {
             PieceType.Z => Color.Red,
-            PieceType.I => Color.Blue,
+            PieceType.I => Color.Cyan,
             PieceType.S => Color.Green,
             PieceType.O => Color.Yellow,
-            PieceType.J => Color.Pink,
+            PieceType.J => Color.Blue,
             PieceType.T => Color.Purple,
             PieceType.L => Color.Orange,
             _ => Color.White,
