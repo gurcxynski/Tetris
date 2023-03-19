@@ -118,10 +118,10 @@ public class Game1 : Game
 
         switch (gameState.state)
         {
-            case StateMachine.GameState.running or StateMachine.GameState.paused:
+            case StateMachine.GameState.running or StateMachine.GameState.paused or StateMachine.GameState.waiting:
                 scene.Draw(spriteBatch);
                 spriteBatch.DrawRectangle(new RectangleF(Config.margin.X, Config.margin.Y, Config.cellSize * Config.cellsX, Config.cellSize * Config.cellsY), Color.Red);
-                spriteBatch.DrawString(Globals.font, $"LEVEL: {scene.level} SCORE: {scene.score}", new(170, 10), Color.Black);
+                spriteBatch.DrawString(Globals.font, $"LEVEL: {scene.level} SCORE: {scene.score} HIGH SCORE: {gameState.max_score}", new(100, 10), Color.Black);
                 break;
             case StateMachine.GameState.startMenu:
                 spriteBatch.Draw(textures["menubackground"], new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);

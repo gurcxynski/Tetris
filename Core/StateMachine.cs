@@ -1,17 +1,26 @@
 ﻿using System;
+using System.Timers;
 
 namespace Tetris.Core;
 
 public class StateMachine
 {
-    public enum GameState { startMenu, optionsMenu, running, paused }
+    public enum GameState { startMenu, optionsMenu, running, paused, waiting }
     public GameState state = GameState.startMenu;
+    public int max_score = 0;
+    Timer Timer = new()
+    {
+        Enabled = false
+    };
+
     public void Pause()
     {
         state = GameState.paused;
     }
     public void NewGame()
     {
+        Game1.scene = new();
+        Game1.scene.Initialize();
         state = GameState.running;
         Game1.self.start.Disable();
     }
@@ -21,7 +30,8 @@ public class StateMachine
     }
     public void GameEnd()
     {
-
+        state = GameState.waiting;
+        if (Game1.scene.score > max_score) max_score = Game1.scene.score;
     }
     public void OpenOptions()
     {

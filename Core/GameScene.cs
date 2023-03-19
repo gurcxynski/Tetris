@@ -76,12 +76,23 @@ public class GameScene
         shade.Step(dir);
         while (shade.Fall()) ;
     }
-    void TakeNew()
+    bool TakeNew()
     {
-        falling = new(queue.Dequeue(), Config.start);
-        NewShade();
+        falling = null;
+        var type = queue.Dequeue();
         QueueNew();
+        var piece = new Piece(type, Config.start, false);
+        foreach (var item in piece.squares)
+        {
+            if (!CanMoveInto(item.gridPosition))
+            {
+                return false;
+            }
+        }
+        falling = new(type, Config.start);
+        NewShade();
         changedPiece = false;
+        return true;
     }
     public void Add(Square arg) => squares.Add(arg);
     bool IsRowFull(int n)
@@ -153,7 +164,8 @@ public class GameScene
                 break;
             case Keys.Escape or Keys.F1:
                 if (Game1.gameState.state == StateMachine.GameState.paused) Game1.gameState.UnPause();
-                else Game1.gameState.Pause();
+                else if (Game1.gameState.state == StateMachine.GameState.running) Game1.gameState.Pause();
+                else if (Game1.gameState.state == StateMachine.GameState.waiting) Game1.gameState.NewGame();
                 break;
             case Keys.D:
                 level++;
@@ -217,7 +229,12 @@ public class GameScene
 
             if (!falling.Fall())
             {
-                TakeNew();
+                if (!TakeNew())
+                {
+                    Globals.keyboard.OnKeyReleased -= HandleInput;
+                    Game1.gameState.GameEnd();
+                    return false;
+                }
 
                 //if (!TakeNewPiece())
                 //{
@@ -272,7 +289,7 @@ public class GameScene
         if (target.X < 0 || target.X >= Config.cellsX || target.Y >= Config.cellsY) return false;
         foreach (var item in squares)
         {
-            if (item.gridPosition == target && !falling.squares.Contains(item)) return false;
+            if (item.gridPosition == target && (falling is null || !falling.squares.Contains(item))) return false;
         }
         return true;
     }
@@ -286,7 +303,10 @@ public class GameScene
         DrawSmallPiece(queue.ToArray()[1], Config.queuePosition + new Vector2(0, 5), spriteBatch);
         DrawSmallPiece(queue.ToArray()[0], Config.queuePosition + new Vector2(0, 10), spriteBatch);
         if (held is not null) DrawSmallPiece((PieceType)held, Config.heldPosition, spriteBatch);
-
+        if (Game1.gameState.state == StateMachine.GameState.waiting)
+        {
+            spriteBatch.DrawString(Globals.font, "PRESS ESC FOR A NEW GAME", new(100, 300), Color.Black);
+        }
     }
     void DrawSmallPiece(PieceType pieceType, Vector2 position, SpriteBatch spriteBatch)
     {
