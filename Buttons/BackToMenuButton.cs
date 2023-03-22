@@ -2,19 +2,20 @@ using Microsoft.Xna.Framework;
 using Tetris.Core;
 namespace Tetris.Buttons
 {
-    class OptionsButton : Button
+    class BackToMenuButton : Button
     {
-        public OptionsButton(Vector2 arg) : base(arg)
+        public BackToMenuButton(Vector2 arg) : base(arg)
         {
 
         }
         public override void Initialize()
         {
-            texture = Game1.textures["optionsbutton"];
+            texture = Game1.textures["returnbutton"];
+            bounds.Size = new(40, 40);
         }
         protected override void Action()
         {
-            Game1.gameState.OpenOptions();
+            Game1.gameState.ToStartMenu();
         }
     }
 }

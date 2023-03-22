@@ -235,19 +235,6 @@ public class GameScene
                     Game1.gameState.GameEnd();
                     return false;
                 }
-
-                //if (!TakeNewPiece())
-                //{
-                //    int max_score = 0;
-                //    int.TryParse(File.ReadAllText("score.txt"), out max_score);
-                //    if (score > max_score)
-                //    {
-                //        using StreamWriter writer = new StreamWriter("score.txt");
-                //        writer.Flush();
-                //        writer.WriteLine(score);
-                //    }
-                //    return false;
-                //}
             }
 
         }

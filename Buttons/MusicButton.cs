@@ -12,6 +12,7 @@ namespace Tetris.Buttons
         }
         public override void Initialize()
         {
+            bounds.Size = new(40, 40);
             texture = Game1.textures["musicbutton"];
         }
         protected override void Action()

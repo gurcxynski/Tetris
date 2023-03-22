@@ -32,7 +32,7 @@ public class Game1 : Game
     public static GameScene scene;
     public static StateMachine gameState;
     public StartMenu start;
-    public OptionsMenu options;
+    public InGameMenu menu;
     public Game1()
     {
         graphics = new GraphicsDeviceManager(this);
@@ -41,12 +41,11 @@ public class Game1 : Game
         Globals.keyboard = new();
         Globals.mouse = new();
 
-        scene = new();
         gameState = new();
 
         start = new();
         start.Enable();
-        options = new();
+        menu = new();
 
 
         self = this;
@@ -58,9 +57,6 @@ public class Game1 : Game
         graphics.PreferredBackBufferHeight = Config.cellSize * Config.cellsY + (int)Config.margin.Y * 2;
 
         graphics.ApplyChanges();
-
-
-        scene.Initialize();
 
         base.Initialize();
     }
@@ -77,13 +73,12 @@ public class Game1 : Game
             ["block"] = Content.Load<Texture2D>("block"),
             ["playbutton"] = Content.Load<Texture2D>("buttons/buttonnew1"),
             ["menubackground"] = Content.Load<Texture2D>("back"),
-            ["optionsbutton"] = Content.Load<Texture2D>("buttons/option1"),
-            ["returnbutton"] = Content.Load<Texture2D>("buttons/return1"),
-            ["musicbutton"] = Content.Load<Texture2D>("buttons/return1"),
+            ["returnbutton"] = Content.Load<Texture2D>("buttons/pause1"),
+            ["musicbutton"] = Content.Load<Texture2D>("buttons/minus1"),
         };
 
         start.Initialize();
-        options.Initialize();
+        menu.Initialize();
 
 
         MediaPlayer.Play(Globals.song);
@@ -99,12 +94,10 @@ public class Game1 : Game
         {
             case StateMachine.GameState.running:
                 scene.Update(gameTime);
+                menu.Update();
                 break;
             case StateMachine.GameState.startMenu:
                 start.Update();
-                break;
-            case StateMachine.GameState.optionsMenu:
-                options.Update();
                 break;
         }
         base.Update(gameTime);
@@ -121,15 +114,12 @@ public class Game1 : Game
             case StateMachine.GameState.running or StateMachine.GameState.paused or StateMachine.GameState.waiting:
                 scene.Draw(spriteBatch);
                 spriteBatch.DrawRectangle(new RectangleF(Config.margin.X, Config.margin.Y, Config.cellSize * Config.cellsX, Config.cellSize * Config.cellsY), Color.Red);
-                spriteBatch.DrawString(Globals.font, $"LEVEL: {scene.level} SCORE: {scene.score} HIGH SCORE: {gameState.max_score}", new(100, 10), Color.Black);
+                spriteBatch.DrawString(Globals.font, $"LEVEL: {scene.level} SCORE: {scene.score} HIGH SCORE: {gameState.max_score}", new(20, 10), Color.Black); 
+                menu.Draw(spriteBatch);
                 break;
             case StateMachine.GameState.startMenu:
                 spriteBatch.Draw(textures["menubackground"], new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
                 start.Draw(spriteBatch);
-                break;
-            case StateMachine.GameState.optionsMenu:
-                spriteBatch.Draw(textures["menubackground"], new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
-                options.Draw(spriteBatch);
                 break;
         }
 
