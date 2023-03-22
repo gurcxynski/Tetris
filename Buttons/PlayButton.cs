@@ -10,7 +10,8 @@ namespace Tetris.Buttons
         }
         public override void Initialize()
         {
-            texture = Game1.textures["playbutton"];
+            text = "NEW GAME";
+            bounds.Size = new(190, 65);
         }
         protected override void Action()
         {

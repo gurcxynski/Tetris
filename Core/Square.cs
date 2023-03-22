@@ -59,12 +59,7 @@ public class Square
     }
     public void Draw(SpriteBatch spriteBatch, bool shade = false)
     {
-        if (shade)
-        {
-            spriteBatch.FillRectangle(Bounds, Color.DarkGray);
-            return;
-        }
-        spriteBatch.FillRectangle(Bounds, color);
-        spriteBatch.DrawRectangle(Bounds, Color.Black, 1);
+        spriteBatch.FillRectangle(Bounds, shade ? Color.White : color);
+        spriteBatch.DrawRectangle(Bounds, shade ? Color.DarkGray : Color.Black, 1);
     }
 }

@@ -1,8 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
 using MonoGame.EasyInput;
 using MonoGame.Extended;
+using MonoGame.Extended.BitmapFonts;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Tetris.Core;
@@ -20,7 +22,11 @@ public static class Globals
     public static EasyMouse mouse;
 
     public static SpriteFont font;
+    public static SpriteFont fontbig;
+    public static SpriteFont fonttitle;
+
     public static Song song;
+    public static SoundEffect clear;
 
 }
 public class Game1 : Game
@@ -33,6 +39,8 @@ public class Game1 : Game
     public static StateMachine gameState;
     public StartMenu start;
     public InGameMenu menu;
+    public PauseMenu pause;
+
     public Game1()
     {
         graphics = new GraphicsDeviceManager(this);
@@ -46,7 +54,7 @@ public class Game1 : Game
         start = new();
         start.Enable();
         menu = new();
-
+        pause = new();
 
         self = this;
     }
@@ -64,22 +72,24 @@ public class Game1 : Game
     {
         spriteBatch = new SpriteBatch(GraphicsDevice);
 
-        Globals.font = Content.Load<SpriteFont>("fonts/MarkerFelt-16");
+        Globals.font = Content.Load<SpriteFont>("basic");
+        Globals.fontbig = Content.Load<SpriteFont>("button");
+        Globals.fonttitle = Content.Load<SpriteFont>("title");
 
         Globals.song = Content.Load<Song>("tetris");
+        Globals.clear = Content.Load<SoundEffect>("clear (1)");
 
         textures = new()
         {
-            ["block"] = Content.Load<Texture2D>("block"),
-            ["playbutton"] = Content.Load<Texture2D>("buttons/buttonnew1"),
+            ["playbutton"] = Content.Load<Texture2D>("play"),
             ["menubackground"] = Content.Load<Texture2D>("back"),
-            ["returnbutton"] = Content.Load<Texture2D>("buttons/pause1"),
-            ["musicbutton"] = Content.Load<Texture2D>("buttons/minus1"),
+            ["returnbutton"] = Content.Load<Texture2D>("pause"),
+            ["musicbutton"] = Content.Load<Texture2D>("musicon"),
         };
 
         start.Initialize();
         menu.Initialize();
-
+        pause.Initialize();
 
         MediaPlayer.Play(Globals.song);
         MediaPlayer.IsRepeating = true;
@@ -99,13 +109,16 @@ public class Game1 : Game
             case StateMachine.GameState.startMenu:
                 start.Update();
                 break;
+            case StateMachine.GameState.pauseMenu:
+                pause.Update();
+                break;
         }
         base.Update(gameTime);
     }
 
     protected override void Draw(GameTime gameTime)
     {
-        GraphicsDevice.Clear(Color.LightGray);
+        GraphicsDevice.Clear(Color.Black);
 
         spriteBatch.Begin();
 
@@ -113,13 +126,19 @@ public class Game1 : Game
         {
             case StateMachine.GameState.running or StateMachine.GameState.paused or StateMachine.GameState.waiting:
                 scene.Draw(spriteBatch);
-                spriteBatch.DrawRectangle(new RectangleF(Config.margin.X, Config.margin.Y, Config.cellSize * Config.cellsX, Config.cellSize * Config.cellsY), Color.Red);
-                spriteBatch.DrawString(Globals.font, $"LEVEL: {scene.level} SCORE: {scene.score} HIGH SCORE: {gameState.max_score}", new(20, 10), Color.Black); 
+                spriteBatch.DrawRectangle(new RectangleF(Config.margin.X, Config.margin.Y, Config.cellSize * Config.cellsX, Config.cellSize * Config.cellsY), Color.DarkBlue);
+                spriteBatch.DrawString(Globals.font, $"LVL: {scene.level} SCORE: {scene.score} HI-SCORE: {gameState.max_score}", new(20, 10), Color.White); 
                 menu.Draw(spriteBatch);
                 break;
             case StateMachine.GameState.startMenu:
                 spriteBatch.Draw(textures["menubackground"], new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
+                spriteBatch.DrawString(Globals.fonttitle, "TETRIS", new Vector2(130, 20), Color.White);
                 start.Draw(spriteBatch);
+                break;
+            case StateMachine.GameState.pauseMenu:
+                spriteBatch.Draw(textures["menubackground"], new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
+                spriteBatch.DrawString(Globals.fonttitle, "TETRIS", new Vector2(130, 20), Color.White);
+                pause.Draw(spriteBatch);
                 break;
         }
 

@@ -1,8 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Tetris.Core;
@@ -33,7 +35,6 @@ public class GameScene
     readonly List<Square> squares;
     Queue<PieceType> queue = new();
     PieceType? held = null;
-    //        int score = 0;
     double lastTick = 0;
     bool changedPiece = false;
     Generator gen = new();
@@ -45,7 +46,7 @@ public class GameScene
     {
         squares = new List<Square>();
         QueueNew(3);
-        Globals.keyboard.OnKeyReleased += HandleInput;
+        Globals.keyboard.OnKeyReleased = HandleInput;
     }
     public void Initialize()
     {
@@ -129,7 +130,7 @@ public class GameScene
         }
         changedPiece = true;
     }
-    void HandleInput(Keys button)
+    public void HandleInput(Keys button)
     {
         if (Game1.gameState.state != StateMachine.GameState.running && button != Keys.Escape && button != Keys.F1) return;
         switch (button)
@@ -246,6 +247,7 @@ public class GameScene
                 cleared++;
             }
         }
+        if (cleared > 0) Globals.clear.Play(0.5f, 0.1f, 0.5f);
         exp += cleared switch
         {
             1 => 1,
@@ -292,12 +294,12 @@ public class GameScene
         if (held is not null) DrawSmallPiece((PieceType)held, Config.heldPosition, spriteBatch);
         if (Game1.gameState.state == StateMachine.GameState.waiting)
         {
-            spriteBatch.DrawString(Globals.font, "PRESS ESC FOR A NEW GAME", new(100, 300), Color.Black);
+            spriteBatch.DrawString(Globals.font, "PRESS ESC FOR A NEW GAME", new(100, 300), Color.White);
         }
     }
     void DrawSmallPiece(PieceType pieceType, Vector2 position, SpriteBatch spriteBatch)
     {
-        var piece = new Piece(pieceType, position, false, 25);
+        var piece = new Piece(pieceType, position, false);
         piece.squares.ForEach(delegate (Square square) { square.Draw(spriteBatch); });
     }
 }

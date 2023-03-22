@@ -9,8 +9,11 @@
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <ApplicationIcon>Icon.ico</ApplicationIcon>
+    <ApplicationIcon>image_2023-03-22_220305059.ico</ApplicationIcon>
   </PropertyGroup>
+  <ItemGroup>
+    <Content Include="image_2023-03-22_220305059.ico" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MonoGame.Extended" Version="3.8.0" />
     <PackageReference Include="MonoGame.Extended.Graphics" Version="3.8.0" />
