@@ -45,6 +45,7 @@ public class StateMachine
     }
     public void ToPauseMenu()
     {
+        if (state == GameState.waiting) { ToStartMenu(); return; }
         Game1.self.pause.Enable();
         Game1.self.menu.Disable();
         state = GameState.pauseMenu;

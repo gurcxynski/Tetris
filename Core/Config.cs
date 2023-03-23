@@ -9,7 +9,7 @@ public static class Settings
 public static class Config
 {
     public static Vector2 margin = new(130, 50);
-    public static Vector2 queuePosition = new(11, 3);
+    public static Vector2 queuePosition = new(11, 4);
     public static Vector2 heldPosition = new(-3, 3);
     public static int tickSpeed = 300;
     public static int cellsX = 10;

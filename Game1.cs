@@ -85,6 +85,9 @@ public class Game1 : Game
             ["menubackground"] = Content.Load<Texture2D>("back"),
             ["returnbutton"] = Content.Load<Texture2D>("pause"),
             ["musicbutton"] = Content.Load<Texture2D>("musicon"),
+            ["musicbutton1"] = Content.Load<Texture2D>("musicoff"),
+            ["hold"] = Content.Load<Texture2D>("hold"),
+            ["next"] = Content.Load<Texture2D>("next"),
         };
 
         start.Initialize();
@@ -126,8 +129,7 @@ public class Game1 : Game
         {
             case StateMachine.GameState.running or StateMachine.GameState.paused or StateMachine.GameState.waiting:
                 scene.Draw(spriteBatch);
-                spriteBatch.DrawRectangle(new RectangleF(Config.margin.X, Config.margin.Y, Config.cellSize * Config.cellsX, Config.cellSize * Config.cellsY), Color.DarkBlue);
-                spriteBatch.DrawString(Globals.font, $"LVL: {scene.level} SCORE: {scene.score} HI-SCORE: {gameState.max_score}", new(20, 10), Color.White); 
+                
                 menu.Draw(spriteBatch);
                 break;
             case StateMachine.GameState.startMenu:

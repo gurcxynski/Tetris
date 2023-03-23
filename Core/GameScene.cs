@@ -1,11 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
+using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
+using static Tetris.Core.StateMachine;
 
 namespace Tetris.Core;
 
@@ -132,7 +132,7 @@ public class GameScene
     }
     public void HandleInput(Keys button)
     {
-        if (Game1.gameState.state != StateMachine.GameState.running && button != Keys.Escape && button != Keys.F1) return;
+        if (Game1.gameState.state != StateMachine.GameState.running && Game1.gameState.state != StateMachine.GameState.waiting && button != Keys.Escape && button != Keys.F1) return;
         switch (button)
         {
             case Keys.Left or Keys.NumPad4:
@@ -173,55 +173,6 @@ public class GameScene
                 break;
         }
     }
-    //        bool TakeNewPiece()
-    //        {
-    //            foreach (Square item in squares)
-    //            {
-    //                if (item.Position.Y < 3) 
-    //                {
-    //                    Globals.keyboard.OnKeyReleased -= HandleInput;
-    //                    return false;
-    //                }
-    //            }
-
-    //            falling.squares.ForEach(delegate (Square item)
-    //            {
-    //                item.toMoveWhenCleared = true;
-    //            });
-
-    //            falling = Dequeue();
-    //            changedCurrentPiece = false;
-    //            int cleared = 0;
-
-    //            for (int i = 0; i < Globals.maxY; i++)
-    //            {
-    //                if (IsRowFull(i))
-    //                {
-    //                    cleared++;
-    //                    ClearRow(i);
-    //                }
-    //            }
-
-    //            switch (cleared)
-    //            {
-    //                case 1:
-    //                    score += 100 * Settings.gravity;
-    //                    break;
-    //                case 2:
-    //                    score += 300 * Settings.gravity;
-    //                    break;
-    //                case 3:
-    //                    score += 500 * Settings.gravity;
-    //                    break;
-    //                case 4:
-    //                    score += 800 * Settings.gravity;
-    //                    break;
-    //            }
-
-    //            if (cleared > 0) Settings.gravity++;
-
-    //            return true;
-    //        }
     public bool Update(GameTime updateTime)
     {
         if (updateTime.TotalGameTime.TotalMilliseconds - lastTick > tickspeed)
@@ -264,6 +215,7 @@ public class GameScene
             4 => 1200,
             _ => 0
         };
+        if (score > Game1.gameState.max_score) Game1.gameState.max_score = score;
         if (exp >= 5 * level)
         {
             exp = 0;
@@ -286,16 +238,19 @@ public class GameScene
     {
         shade.squares.ForEach(delegate (Square square) { square.Draw(spriteBatch, true); });
 
+        spriteBatch.DrawRectangle(new RectangleF(Config.margin.X, Config.margin.Y, Config.cellSize * Config.cellsX, Config.cellSize * Config.cellsY), Color.DarkBlue, 5);
+        spriteBatch.DrawString(Globals.font, $"LVL: {level} SCORE: {score} HI-SCORE: {Game1.gameState.max_score}", new(20, 10), Color.White);
+        spriteBatch.Draw(Game1.textures["hold"], new Vector2(10, 60), Color.White);
+        spriteBatch.Draw(Game1.textures["next"], new Vector2(430, 85), Color.White);
+
         squares.ForEach(delegate (Square item) { item.Draw(spriteBatch); });
 
         DrawSmallPiece(queue.ToArray()[2], Config.queuePosition, spriteBatch);
         DrawSmallPiece(queue.ToArray()[1], Config.queuePosition + new Vector2(0, 5), spriteBatch);
         DrawSmallPiece(queue.ToArray()[0], Config.queuePosition + new Vector2(0, 10), spriteBatch);
+
         if (held is not null) DrawSmallPiece((PieceType)held, Config.heldPosition, spriteBatch);
-        if (Game1.gameState.state == StateMachine.GameState.waiting)
-        {
-            spriteBatch.DrawString(Globals.font, "PRESS ESC FOR A NEW GAME", new(100, 300), Color.White);
-        }
+        if (Game1.gameState.state == GameState.waiting) spriteBatch.DrawString(Globals.fontbig, "GAME OVER", new(200, 300), Color.White);
     }
     void DrawSmallPiece(PieceType pieceType, Vector2 position, SpriteBatch spriteBatch)
     {

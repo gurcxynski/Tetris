@@ -21,11 +21,13 @@ class EnableMusicButton : Button
         {
             Settings.music = false;
             MediaPlayer.Stop();
+            texture = Game1.textures["musicbutton1"];
         }
         else
         {
             MediaPlayer.Play(Globals.song);
             Settings.music = true;
+            texture = Game1.textures["musicbutton"];
         }
     }
 }
