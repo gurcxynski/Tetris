@@ -1,14 +1,14 @@
 ﻿using Tetris.Buttons;
 using Tetris.Core;
 
-namespace Tetris.Menus
+namespace Tetris.Menus;
+
+public class PauseMenu : Menu
 {
-    public class PauseMenu : Menu
+    public PauseMenu()
     {
-        public PauseMenu()
-        {
-            Add(new ResumeButton(new(160, 180)));
-            Add(new PlayButton(new(160, 280)));
-        }
+        Add(new ResumeButton(new(200, 180)));
+        Add(new PlayButton(new(200, 280)));
+        Add(new ControlsButton(new(200, 380)));
     }
 }

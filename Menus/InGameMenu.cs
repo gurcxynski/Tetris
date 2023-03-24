@@ -8,7 +8,7 @@ public class InGameMenu : Menu
 {
     public InGameMenu()
     {
-        Add(new PauseButton(new(450, 10)));
-        Add(new EnableMusicButton(new(500, 10)));
+        Add(new PauseButton(new(500, 10)));
+        Add(new EnableMusicButton(new(550, 10)));
     }
 }

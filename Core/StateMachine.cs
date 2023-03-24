@@ -5,7 +5,7 @@ namespace Tetris.Core;
 
 public class StateMachine
 {
-    public enum GameState { startMenu, pauseMenu, running, paused, waiting }
+    public enum GameState { startMenu, pauseMenu, running, controls, paused, waiting }
     public GameState state = GameState.startMenu;
     public int max_score = 0;
 
@@ -18,14 +18,14 @@ public class StateMachine
         Game1.scene = new();
         Game1.scene.Initialize();
         state = GameState.running;
-        Game1.self.start.Disable();
-        Game1.self.menu.Enable();
+        Game1.menus["start"].Disable();
+        Game1.menus["ingame"].Enable();
     }
     public void Resume()
     {
         state = GameState.running;
-        Game1.self.pause.Disable();
-        Game1.self.menu.Enable();
+        Game1.menus["pause"].Disable();
+        Game1.menus["ingame"].Enable();
     }
     public void UnPause()
     {
@@ -39,15 +39,22 @@ public class StateMachine
 
     public void ToStartMenu()
     {
-        Game1.self.start.Enable();
-        Game1.self.menu.Disable();
+        Game1.menus["start"].Enable();
+        Game1.menus["ingame"].Disable();
         state = GameState.startMenu;
     }
     public void ToPauseMenu()
     {
         if (state == GameState.waiting) { ToStartMenu(); return; }
-        Game1.self.pause.Enable();
-        Game1.self.menu.Disable();
+        Game1.menus["pause"].Enable();
+        Game1.menus["ingame"].Disable();
         state = GameState.pauseMenu;
+    }
+
+    public void ToControlsScreen()
+    {
+        state = GameState.controls;
+        Game1.menus["pause"].Disable();
+        Game1.menus["controls"].Enable();
     }
 }

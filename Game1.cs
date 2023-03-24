@@ -3,10 +3,7 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
 using MonoGame.EasyInput;
-using MonoGame.Extended;
-using MonoGame.Extended.BitmapFonts;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Tetris.Core;
 using Tetris.Menus;
 
@@ -37,9 +34,8 @@ public class Game1 : Game
     SpriteBatch spriteBatch;
     public static GameScene scene;
     public static StateMachine gameState;
-    public StartMenu start;
-    public InGameMenu menu;
-    public PauseMenu pause;
+
+    public static Dictionary<string, Menu> menus;
 
     public Game1()
     {
@@ -51,10 +47,15 @@ public class Game1 : Game
 
         gameState = new();
 
-        start = new();
-        start.Enable();
-        menu = new();
-        pause = new();
+        menus = new()
+        {
+            ["start"] = new StartMenu(),
+            ["ingame"] = new InGameMenu(),
+            ["pause"] = new PauseMenu(),
+            ["controls"] = new ControlsMenu(),
+        };
+
+        menus["start"].Enable();
 
         self = this;
     }
@@ -88,15 +89,17 @@ public class Game1 : Game
             ["musicbutton1"] = Content.Load<Texture2D>("musicoff"),
             ["hold"] = Content.Load<Texture2D>("hold"),
             ["next"] = Content.Load<Texture2D>("next"),
+            ["controls"] = Content.Load<Texture2D>("controls"),
         };
 
-        start.Initialize();
-        menu.Initialize();
-        pause.Initialize();
+        menus["start"].Initialize();
+        menus["ingame"].Initialize();
+        menus["pause"].Initialize();
+        menus["controls"].Initialize();
 
         MediaPlayer.Play(Globals.song);
         MediaPlayer.IsRepeating = true;
-        MediaPlayer.Volume = 0.5f;
+        MediaPlayer.Volume = 0.2f;
     }
     protected override void Update(GameTime gameTime)
     {
@@ -107,13 +110,16 @@ public class Game1 : Game
         {
             case StateMachine.GameState.running:
                 scene.Update(gameTime);
-                menu.Update();
+                menus["ingame"].Update();
                 break;
             case StateMachine.GameState.startMenu:
-                start.Update();
+                menus["start"].Update();
                 break;
             case StateMachine.GameState.pauseMenu:
-                pause.Update();
+                menus["pause"].Update();
+                break;
+            case StateMachine.GameState.controls:
+                menus["controls"].Update();
                 break;
         }
         base.Update(gameTime);
@@ -129,18 +135,21 @@ public class Game1 : Game
         {
             case StateMachine.GameState.running or StateMachine.GameState.paused or StateMachine.GameState.waiting:
                 scene.Draw(spriteBatch);
-                
-                menu.Draw(spriteBatch);
+                menus["ingame"].Draw(spriteBatch);
                 break;
             case StateMachine.GameState.startMenu:
                 spriteBatch.Draw(textures["menubackground"], new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
-                spriteBatch.DrawString(Globals.fonttitle, "TETRIS", new Vector2(130, 20), Color.White);
-                start.Draw(spriteBatch);
+                spriteBatch.DrawString(Globals.fonttitle, "TETRIS", new Vector2(160, 20), Color.White);
+                menus["start"].Draw(spriteBatch);
                 break;
             case StateMachine.GameState.pauseMenu:
                 spriteBatch.Draw(textures["menubackground"], new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
-                spriteBatch.DrawString(Globals.fonttitle, "TETRIS", new Vector2(130, 20), Color.White);
-                pause.Draw(spriteBatch);
+                spriteBatch.DrawString(Globals.fonttitle, "TETRIS", new Vector2(160, 20), Color.White);
+                menus["pause"].Draw(spriteBatch);
+                break;
+            case StateMachine.GameState.controls:
+                spriteBatch.Draw(textures["controls"], new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
+                menus["controls"].Draw(spriteBatch);
                 break;
         }
 

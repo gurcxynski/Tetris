@@ -42,6 +42,8 @@ public class GameScene
     double tickspeed = Config.tickSpeed;
     public int level = 1;
     public int score = 0;
+    double isHeldFor = 0;
+    double lastSlideTick = 0;
     public GameScene()
     {
         squares = new List<Square>();
@@ -101,8 +103,7 @@ public class GameScene
         var row = from square in squares
                   where square.gridPosition.Y == n
                   select square;
-        if (row.Count() == Config.cellsX) return true;
-        return false;
+        return row.Count() == Config.cellsX;
     }
     void ClearRow(int n)
     {
@@ -130,9 +131,11 @@ public class GameScene
         }
         changedPiece = true;
     }
+
     public void HandleInput(Keys button)
     {
-        if (Game1.gameState.state != StateMachine.GameState.running && Game1.gameState.state != StateMachine.GameState.waiting && button != Keys.Escape && button != Keys.F1) return;
+        isHeldFor = 0;
+        if (Game1.gameState.state != GameState.running && Game1.gameState.state != GameState.waiting && button != Keys.Escape && button != Keys.F1) return;
         switch (button)
         {
             case Keys.Left or Keys.NumPad4:
@@ -164,17 +167,30 @@ public class GameScene
                 score += lines;
                 break;
             case Keys.Escape or Keys.F1:
-                if (Game1.gameState.state == StateMachine.GameState.paused) Game1.gameState.UnPause();
-                else if (Game1.gameState.state == StateMachine.GameState.running) Game1.gameState.Pause();
-                else if (Game1.gameState.state == StateMachine.GameState.waiting) Game1.gameState.NewGame();
-                break;
-            case Keys.D:
-                level++;
+                if (Game1.gameState.state == GameState.paused) Game1.gameState.UnPause();
+                else if (Game1.gameState.state == GameState.running) Game1.gameState.Pause();
+                else if (Game1.gameState.state == GameState.waiting) Game1.gameState.NewGame();
                 break;
         }
     }
     public bool Update(GameTime updateTime)
     {
+        if (Globals.keyboard.AnyKeyPressed) isHeldFor += updateTime.ElapsedGameTime.TotalMilliseconds;
+        if (isHeldFor > 250 && updateTime.TotalGameTime.TotalMilliseconds - lastSlideTick > 100)
+        {
+            if (Globals.keyboard.IsPressed(Keys.Left))
+            {
+                falling.Step(Direction.Left);
+                UpdateShade(Direction.Left);
+                lastSlideTick = updateTime.TotalGameTime.TotalMilliseconds;
+            }
+            if (Globals.keyboard.IsPressed(Keys.Right))
+            {
+                falling.Step(Direction.Right);
+                UpdateShade(Direction.Right);
+                lastSlideTick = updateTime.TotalGameTime.TotalMilliseconds;
+            }
+        }
         if (updateTime.TotalGameTime.TotalMilliseconds - lastTick > tickspeed)
         {
             lastTick = updateTime.TotalGameTime.TotalMilliseconds;
@@ -198,7 +214,7 @@ public class GameScene
                 cleared++;
             }
         }
-        if (cleared > 0) Globals.clear.Play(0.5f, 0.1f, 0.5f);
+        if (cleared > 0) Globals.clear.Play(0.3f, 0.1f, 0.5f);
         exp += cleared switch
         {
             1 => 1,
@@ -238,10 +254,11 @@ public class GameScene
     {
         shade.squares.ForEach(delegate (Square square) { square.Draw(spriteBatch, true); });
 
-        spriteBatch.DrawRectangle(new RectangleF(Config.margin.X, Config.margin.Y, Config.cellSize * Config.cellsX, Config.cellSize * Config.cellsY), Color.DarkBlue, 5);
+        var thicc = 5;
+        spriteBatch.DrawRectangle(new RectangleF(Config.margin.X - thicc, Config.margin.Y - thicc, Config.cellSize * Config.cellsX + 2 * thicc, Config.cellSize * Config.cellsY + 2 * thicc), Color.DarkBlue, thicc);
         spriteBatch.DrawString(Globals.font, $"LVL: {level} SCORE: {score} HI-SCORE: {Game1.gameState.max_score}", new(20, 10), Color.White);
-        spriteBatch.Draw(Game1.textures["hold"], new Vector2(10, 60), Color.White);
-        spriteBatch.Draw(Game1.textures["next"], new Vector2(430, 85), Color.White);
+        spriteBatch.Draw(Game1.textures["hold"], new Vector2(-3, 60), Color.White);
+        spriteBatch.Draw(Game1.textures["next"], new Vector2(480, 85), Color.White);
 
         squares.ForEach(delegate (Square item) { item.Draw(spriteBatch); });
 

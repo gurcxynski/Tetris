@@ -7,6 +7,6 @@ public class StartMenu : Menu
 {
     public StartMenu()
     {
-        Add(new PlayButton(new(160, 180)));
+        Add(new PlayButton(new(200, 180)));
     }
 }
