@@ -63,18 +63,7 @@ public class Piece
                 break;
         }
     }
-    //public bool MoveTo(Vector2 pos)
-    //{
-    //    foreach (Square item in squares)
-    //    {
-    //        Vector2 relative = item.Bounds.Position - position;
-    //        if (!Game1.scene.CanMoveInto(pos + relative)) return false;
-    //        item.MoveToPos(pos + relative);
-    //    }
-    //    position = pos;
-    //    return true;
-    //}
-    
+
     public bool Step(Direction direction, float amount = 1)
     {
         Vector2 change = direction switch
@@ -91,7 +80,7 @@ public class Piece
             if (!item.CheckMove(direction, amount)) return false;
         }
         
-        squares.ForEach(delegate (Square square) { square.MoveToPos(square.gridPosition + change); });
+        squares.ForEach(square => square.MoveToPos(square.gridPosition + change));
 
         position += change;
         
@@ -659,7 +648,7 @@ public class Piece
             if (!item.CheckMove(Direction.Down)) return false;
         }
 
-        squares.ForEach(delegate (Square square) { square.Step(Direction.Down); });
+        squares.ForEach(square => square.Step(Direction.Down));
 
         position += new Vector2(0, 1);
         return true;

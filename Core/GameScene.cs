@@ -251,7 +251,7 @@ public class GameScene
     }
     public void Draw(SpriteBatch spriteBatch)
     {
-        shade.squares.ForEach(delegate (Square square) { square.Draw(spriteBatch, true); });
+        shade.squares.ForEach(square => square.Draw(spriteBatch, true));
 
         var thicc = 5;
         spriteBatch.DrawRectangle(new RectangleF(Config.margin.X - thicc, Config.margin.Y - thicc, Config.cellSize * Config.cellsX + 2 * thicc, Config.cellSize * Config.cellsY + 2 * thicc), Color.DarkBlue, thicc);
@@ -259,7 +259,7 @@ public class GameScene
         spriteBatch.Draw(Game1.textures["hold"], new Vector2(-3, 60), Color.White);
         spriteBatch.Draw(Game1.textures["next"], new Vector2(480, 85), Color.White);
 
-        squares.ForEach(delegate (Square item) { item.Draw(spriteBatch); });
+        squares.ForEach(item => item.Draw(spriteBatch));
 
         DrawSmallPiece(queue.ToArray()[2], Config.queuePosition, spriteBatch);
         DrawSmallPiece(queue.ToArray()[1], Config.queuePosition + new Vector2(0, 5), spriteBatch);
@@ -271,6 +271,6 @@ public class GameScene
     void DrawSmallPiece(PieceType pieceType, Vector2 position, SpriteBatch spriteBatch)
     {
         var piece = new Piece(pieceType, position, false);
-        piece.squares.ForEach(delegate (Square square) { square.Draw(spriteBatch); });
+        piece.squares.ForEach(square => square.Draw(spriteBatch));
     }
 }
