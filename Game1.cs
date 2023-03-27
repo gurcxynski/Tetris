@@ -3,7 +3,10 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
 using MonoGame.EasyInput;
+using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using Tetris.Core;
 using Tetris.Menus;
 
@@ -47,12 +50,18 @@ public class Game1 : Game
 
         gameState = new();
 
+        var read = File.ReadAllText("scores.txt").Trim().Split(";", StringSplitOptions.RemoveEmptyEntries);
+        foreach (var item in read)
+        {
+            gameState.scores.Add(int.Parse(item));
+        }
         menus = new()
         {
             ["start"] = new StartMenu(),
             ["ingame"] = new InGameMenu(),
             ["pause"] = new PauseMenu(),
             ["controls"] = new ControlsMenu(),
+            ["scores"] = new ScoresMenu(),
         };
 
         menus["start"].Enable();
@@ -92,10 +101,10 @@ public class Game1 : Game
             ["controls"] = Content.Load<Texture2D>("controls"),
         };
 
-        menus["start"].Initialize();
-        menus["ingame"].Initialize();
-        menus["pause"].Initialize();
-        menus["controls"].Initialize();
+        foreach (var item in menus)
+        {
+            item.Value.Initialize();
+        }
 
         MediaPlayer.Play(Globals.song);
         MediaPlayer.IsRepeating = true;
@@ -120,6 +129,9 @@ public class Game1 : Game
                 break;
             case StateMachine.GameState.controls:
                 menus["controls"].Update();
+                break;
+            case StateMachine.GameState.scores:
+                menus["scores"].Update();
                 break;
         }
         base.Update(gameTime);
@@ -150,6 +162,13 @@ public class Game1 : Game
             case StateMachine.GameState.controls:
                 spriteBatch.Draw(textures["controls"], new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
                 menus["controls"].Draw(spriteBatch);
+                break;
+            case StateMachine.GameState.scores:
+                menus["scores"].Draw(spriteBatch);
+                for(var i = 0; i < gameState.scores.Count(); i++)
+                {
+                    spriteBatch.DrawString(Globals.font, gameState.scores[i].ToString(), new(20, i * 30), Color.White);
+                }
                 break;
         }
 

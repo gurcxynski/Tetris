@@ -7,6 +7,6 @@ public class ControlsMenu : Menu
 {
     public ControlsMenu()
     {
-        Add(new ResumeButton(new(200, 580)));
+        Add(new PauseButton(new(200, 580), "BACK"));
     }
 }

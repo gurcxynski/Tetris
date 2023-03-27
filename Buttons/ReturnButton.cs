@@ -10,7 +10,8 @@ class ReturnButton : Button
     }
     public override void Initialize()
     {
-        texture = Game1.textures["returnbutton"];
+        text = "BACK";
+        bounds.Size = new(190, 65);
     }
     protected override void Action()
     {

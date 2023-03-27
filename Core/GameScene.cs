@@ -231,7 +231,6 @@ public class GameScene
             4 => 1200,
             _ => 0
         };
-        if (score > Game1.gameState.max_score) Game1.gameState.max_score = score;
         if (exp >= 5 * level)
         {
             exp = 0;
@@ -256,7 +255,7 @@ public class GameScene
 
         var thicc = 5;
         spriteBatch.DrawRectangle(new RectangleF(Config.margin.X - thicc, Config.margin.Y - thicc, Config.cellSize * Config.cellsX + 2 * thicc, Config.cellSize * Config.cellsY + 2 * thicc), Color.DarkBlue, thicc);
-        spriteBatch.DrawString(Globals.font, $"LVL: {level} SCORE: {score} HI-SCORE: {Game1.gameState.max_score}", new(20, 10), Color.White);
+        spriteBatch.DrawString(Globals.font, $"LVL: {level} SCORE: {score} HI-SCORE: {(Game1.gameState.scores.Count == 0 ? 0 : Game1.gameState.scores[0])}", new(20, 10), Color.White);
         spriteBatch.Draw(Game1.textures["hold"], new Vector2(-3, 60), Color.White);
         spriteBatch.Draw(Game1.textures["next"], new Vector2(480, 85), Color.White);
 

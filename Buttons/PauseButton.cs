@@ -9,8 +9,17 @@ class PauseButton : Button
     {
 
     }
+    public PauseButton(Vector2 arg, string text) : base(arg)
+    {
+        this.text = text;
+    }
     public override void Initialize()
     {
+        if (text is not null)
+        {
+            bounds.Size = new(190, 65);
+            return;
+        }
         texture = Game1.textures["returnbutton"];
         bounds.Size = new(40, 40);
     }
