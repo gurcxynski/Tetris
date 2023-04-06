@@ -175,9 +175,9 @@ public class Game1 : Game
                 menus["scores"].Draw(spriteBatch);
                 for(var i = 1; i <= gameState.scores.Count; i++)
                 {
-                    spriteBatch.DrawString(Globals.fontbig, $"{i}.", new(200, 30 + i * 40), Color.White);
-                    spriteBatch.DrawString(Globals.fontbig, gameState.scores[i - 1].ToString(), new(430 - Globals.fontbig.MeasureString(gameState.scores[i - 1].ToString()).X, 30 + i * 40), Color.White);
-                    
+                    spriteBatch.DrawString(Globals.fontbig, $"{i}.", new(200, 100 + i * 40), Color.White);
+                    spriteBatch.DrawString(Globals.fontbig, gameState.scores[i - 1].ToString(), new(430 - Globals.fontbig.MeasureString(gameState.scores[i - 1].ToString()).X, 100 + i * 40), Color.White);
+                    spriteBatch.DrawString(Globals.fonttitle, "HIGH SCORES", new(40, 10), Color.White);
                 }
                 break;
         }
