@@ -11,7 +11,6 @@ class ReturnButton : Button
     public override void Initialize()
     {
         text = "BACK";
-        bounds.Size = new(190, 65);
     }
     protected override void Action()
     {

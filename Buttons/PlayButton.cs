@@ -11,7 +11,7 @@ class PlayButton : Button
     public override void Initialize()
     {
         text = "NEW GAME";
-        bounds.Size = new(190, 65);
+        bounds.Size = new(230, 65);
     }
     protected override void Action()
     {

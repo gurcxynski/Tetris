@@ -266,7 +266,7 @@ public class GameScene
         DrawSmallPiece(queue.ToArray()[0], Config.queuePosition + new Vector2(0, 10), spriteBatch);
 
         if (held is not null) DrawSmallPiece((PieceType)held, Config.heldPosition, spriteBatch);
-        if (Game1.gameState.state == GameState.waiting) spriteBatch.DrawString(Globals.fontbig, "GAME OVER", new(200, 300), Color.White);
+        if (Game1.gameState.state == GameState.waiting) spriteBatch.DrawString(Globals.fontbig, "GAME OVER", new(230, 320), Color.White);
     }
     void DrawSmallPiece(PieceType pieceType, Vector2 position, SpriteBatch spriteBatch)
     {

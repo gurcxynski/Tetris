@@ -11,7 +11,6 @@ class ControlsButton : Button
     public override void Initialize()
     {
         text = "CONTROLS";
-        bounds.Size = new(190, 65);
     }
     protected override void Action()
     {

@@ -15,11 +15,7 @@ class PauseButton : Button
     }
     public override void Initialize()
     {
-        if (text is not null)
-        {
-            bounds.Size = new(190, 65);
-            return;
-        }
+        if (text is not null) return;
         texture = Game1.textures["returnbutton"];
         bounds.Size = new(40, 40);
     }

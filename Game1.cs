@@ -49,8 +49,16 @@ public class Game1 : Game
         Globals.mouse = new();
 
         gameState = new();
-
-        var read = File.ReadAllText("scores.txt").Trim().Split(";", StringSplitOptions.RemoveEmptyEntries);
+        string[] read;
+        try
+        {
+            read = File.ReadAllText("scores.txt").Trim().Split(";", StringSplitOptions.RemoveEmptyEntries);
+        }
+        catch
+        {
+            File.Create("scores.txt").Close();
+            read = Array.Empty<string>();
+        }
         foreach (var item in read)
         {
             gameState.scores.Add(int.Parse(item));
@@ -165,9 +173,11 @@ public class Game1 : Game
                 break;
             case StateMachine.GameState.scores:
                 menus["scores"].Draw(spriteBatch);
-                for(var i = 0; i < gameState.scores.Count(); i++)
+                for(var i = 1; i <= gameState.scores.Count; i++)
                 {
-                    spriteBatch.DrawString(Globals.font, gameState.scores[i].ToString(), new(20, i * 30), Color.White);
+                    spriteBatch.DrawString(Globals.fontbig, $"{i}.", new(200, 30 + i * 40), Color.White);
+                    spriteBatch.DrawString(Globals.fontbig, gameState.scores[i - 1].ToString(), new(430 - Globals.fontbig.MeasureString(gameState.scores[i - 1].ToString()).X, 30 + i * 40), Color.White);
+                    
                 }
                 break;
         }

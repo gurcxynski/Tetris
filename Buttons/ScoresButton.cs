@@ -11,7 +11,6 @@ class ScoresButton : Button
     public override void Initialize()
     {
         text = "HIGH SCORES";
-        bounds.Size = new(190, 65);
     }
     protected override void Action()
     {

@@ -14,7 +14,7 @@ public abstract class Button
     protected Button(Vector2 position)
     {
         Globals.mouse.OnMouseButtonPressed += OnClick;
-        bounds = new(position, new Size2(100, 30));
+        bounds = new(position, new(230, 65));
     }
     public void Draw(SpriteBatch spriteBatch)
     {
